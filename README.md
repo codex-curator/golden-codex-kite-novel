@@ -47,7 +47,7 @@ An autonomous art collector evaluating for quality, not compliance. Different cr
 - **Rich poetic metadata** — Soul Whisper readings, emotional journey depth, visual analysis quality
 - **Collection coherence** — How the piece relates to what Maestro already owns
 
-Maestro pays a 50% collector premium because curation has value. Its reasoning is visible in real-time — judges watch an AI agent thinking about art.
+Same verification, same x402 rate — different judgment. Its reasoning is visible in real-time — judges watch an AI agent thinking about art.
 
 **Polling**: Every 3 minutes | **Budget**: $5/day | **Collection**: `operator_maestro/`
 
@@ -80,8 +80,8 @@ Claude evaluates:                     Claude evaluates:
   "C2PA intact? ✓"                     "Rarity: HIGH."
   "→ LICENSE APPROVED"                  "→ ACQUIRE"
     ↓                                     ↓
-x402: $0.01 → artist (95%)           x402: $0.015 → artist (95%)
-      $0.0005 → platform (5%)              $0.00075 → platform (5%)
+x402: $0.0095 → artist (95%)          x402: $0.0095 → artist (95%)
+      $0.0005 → platform (5%)              $0.0005 → platform (5%)
 ```
 
 Both agents see the same drops. Both verify. Each evaluates differently. One might license while the other passes — or both acquire the same piece. Claude's reasoning streams to Firestore in real-time.
@@ -127,7 +127,7 @@ $0.001  → Metavolve (verification fee — always charged, even on rejections)
 $0.0095 → Artist (95% of license)        [CIL pricing]
 $0.0005 → Metavolve (5% platform fee)    [CIL pricing]
 ───────────────────────────────
-$0.011 total per CIL license | $0.016 total per Maestro license (collector premium)
+$0.011 total per license (both buyers, same rate)
 ```
 
 Metavolve earns on every verification, whether the buyer licenses or not. The artist earns 95% on every license. The platform scales with volume.

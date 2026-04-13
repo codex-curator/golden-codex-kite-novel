@@ -67,12 +67,12 @@ OPERATOR_VAULT = os.environ.get("OPERATOR_VAULT", "")
 # Metavolve revenue wallet
 METAVOLVE_WALLET = os.environ.get("METAVOLVE_WALLET", "0xFE141943a93c184606F3060103D975662327063B")
 
-# Fee structure — Maestro pays a premium for curated pieces
+# Fee structure — same rates as CIL, different criteria not different price
 VERIFICATION_FEE = 0.001    # $0.001 → Metavolve (always charged)
-LICENSE_TOTAL = 0.015        # $0.015 total — collector premium (50% more than CIL)
+LICENSE_TOTAL = 0.01         # $0.01 total license cost
 TRANSACTION_FEE_PCT = 0.05  # 5% transaction fee → Metavolve
-ARTIST_SHARE = LICENSE_TOTAL * (1 - TRANSACTION_FEE_PCT)
-PLATFORM_FEE = LICENSE_TOTAL * TRANSACTION_FEE_PCT
+ARTIST_SHARE = LICENSE_TOTAL * (1 - TRANSACTION_FEE_PCT)  # $0.0095 → Artist
+PLATFORM_FEE = LICENSE_TOTAL * TRANSACTION_FEE_PCT          # $0.0005 → Metavolve
 
 # Monitored accounts — same artists, different eye
 MONITORED_ACCOUNTS = {
@@ -279,7 +279,7 @@ PROVENANCE (verified on-chain):
 
 ACQUISITION COST:
 - Verification: $0.001 (already paid)
-- License: $0.015 (collector premium — you pay 50% more because you value quality)
+- License: $0.01 (standard rate)
 - Budget remaining today: ${artwork_info.get('budget_remaining', 5.0):.2f}
 
 EVALUATE ON:
@@ -480,7 +480,7 @@ def process_drop(tweet_data, account_info, session):
             "artist_share": ARTIST_SHARE,
             "platform_fee_metavolve": PLATFORM_FEE,
             "total_buyer_cost": VERIFICATION_FEE + LICENSE_TOTAL,
-            "collector_premium": "50% above standard license",
+            "total_artist_revenue": ARTIST_SHARE,
         }
 
         session["collection_artwork_ids"].append(verification.get("artwork_id", tweet_data["tweet_id"]))
@@ -497,7 +497,6 @@ def process_drop(tweet_data, account_info, session):
         log_decision("artwork_acquired", {
             "artwork_id": verification.get("artwork_id"),
             "artist_paid": f"${ARTIST_SHARE:.4f}",
-            "collector_premium": "50% above standard",
         }, reasoning=reasoning)
     else:
         event["acquired"] = False
