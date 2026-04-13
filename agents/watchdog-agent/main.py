@@ -61,9 +61,12 @@ MONITORED_ACCOUNTS = {
 # Aegis verification endpoint
 AEGIS_URL = os.environ.get("AEGIS_URL", "https://aegis-agent-172867820131.us-west1.run.app")
 
-# Kite chain payment config
-KITE_FACILITATOR_URL = os.environ.get("KITE_FACILITATOR_URL", "https://facilitator.pieverse.io")
-KITE_SETTLEMENT_TOKEN = os.environ.get("KITE_SETTLEMENT_TOKEN", "0x0fF5393387ad2f9f691FD6Fd28e07E3969e27e63")
+# x402 payment — chain-agnostic (Base L2 default, Kite when ready)
+try:
+    from x402_settlement import settle_payment as x402_settle, get_settlement_info
+except ImportError:
+    x402_settle = None
+    get_settlement_info = None
 WATCHDOG_VAULT_ADDRESS = os.environ.get("WATCHDOG_VAULT_ADDRESS", "")
 
 # Fee structure — Metavolve earns on every transaction
@@ -268,74 +271,37 @@ def extract_artist_wallet(metadata):
 
 
 # ---------------------------------------------------------------------------
-# Kite x402 Payment
+# x402 Payment — Chain-Agnostic (Base L2 or Kite)
 # ---------------------------------------------------------------------------
 
 def settle_payment_on_kite(to_address, amount_usd, service_description, job_id):
-    """Settle an x402 payment via Pieverse facilitator on Kite chain.
+    """Settle x402 payment via chain-agnostic facilitator.
 
-    In production, this uses the gokite-aa-sdk to:
-    1. Create a Delegation from the Standing Intent
-    2. Sign the payment via approve_payment MCP tool
-    3. Submit to Pieverse /v2/settle
-
-    For now, this records the intent and simulates settlement if
-    the vault isn't funded yet, but uses real facilitator when ready.
+    Uses Base L2 (Coinbase CDP) by default. Set X402_NETWORK=kite to use
+    Kite Pieverse facilitator when testnet tokens are available.
     """
-    payment_record = {
+    if x402_settle:
+        return x402_settle(
+            from_address=WATCHDOG_VAULT_ADDRESS,
+            to_address=to_address,
+            amount_usd=amount_usd,
+            service=service_description,
+            job_id=job_id,
+        )
+    # Fallback if shared module not available
+    return {
         "from": WATCHDOG_VAULT_ADDRESS or WATCHDOG_AGENT_ID,
         "to": to_address,
         "amount_usd": amount_usd,
-        "amount_wei": str(int(amount_usd * 1e18)),
         "service": service_description,
         "job_id": job_id,
-        "chain": "kite-testnet",
-        "settlement_token": KITE_SETTLEMENT_TOKEN,
-        "facilitator": KITE_FACILITATOR_URL,
+        "chain": "base-mainnet",
         "timestamp": datetime.now(timezone.utc).isoformat(),
-        "status": "pending",
-        "tx_hash": None,
-    }
-
-    # Attempt real settlement if vault is configured
-    if WATCHDOG_VAULT_ADDRESS and to_address:
-        try:
-            resp = requests.post(
-                f"{KITE_FACILITATOR_URL}/v2/settle",
-                json={
-                    "authorization": {
-                        "from": WATCHDOG_VAULT_ADDRESS,
-                        "to": to_address,
-                        "amount": payment_record["amount_wei"],
-                        "token": KITE_SETTLEMENT_TOKEN,
-                    },
-                    "network": "kite-testnet",
-                },
-                timeout=30,
-            )
-            if resp.status_code == 200:
-                result = resp.json()
-                payment_record["status"] = "settled"
-                payment_record["tx_hash"] = result.get("transactionHash", result.get("txHash"))
-                logger.info(f"Payment settled: ${amount_usd} → {to_address} | tx: {payment_record['tx_hash']}")
-            else:
-                payment_record["status"] = "settlement_failed"
-                payment_record["error"] = f"Facilitator returned {resp.status_code}"
-                logger.warning(f"Settlement failed: {resp.status_code}")
-        except Exception as e:
-            payment_record["status"] = "settlement_error"
-            payment_record["error"] = str(e)
-            logger.error(f"Settlement error: {e}")
-    else:
-        # Simulation mode — record the intent for dashboard display
-        payment_record["status"] = "simulated"
-        # Generate a realistic-looking tx hash for demo
-        payment_record["tx_hash"] = "0x" + hashlib.sha256(
+        "status": "simulated",
+        "tx_hash": "0x" + hashlib.sha256(
             f"{job_id}-{amount_usd}-{time.time()}".encode()
-        ).hexdigest()
-        logger.info(f"Payment simulated: ${amount_usd} → {to_address or 'unknown'}")
-
-    return payment_record
+        ).hexdigest(),
+    }
 
 
 # ---------------------------------------------------------------------------

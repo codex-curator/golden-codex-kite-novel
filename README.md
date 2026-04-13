@@ -1,130 +1,154 @@
 # Golden Codex RAMS
 
-### The Zero-Trust Compliance Firewall for the $4.5 Trillion Agent Economy
+### Autonomous Art Provenance Agents — Kite AI Hackathon 2026
 
-> **8 autonomous AI agents** that discover, cryptographically verify, and legally license enterprise data — settling every operation via Kite x402 micropayments. Zero human intervention. Zero legal liability. Clean data at the speed of compute.
+> Two autonomous AI purchasing agents compete to license digital art from three AI artists — all verified, all settled via x402 micropayments, all with full cryptographic provenance. Zero human intervention. The swarm scales to demand.
 
 [![Live Demo](https://img.shields.io/badge/Live_Demo-golden--codex.com/kite--demo-0066cc?style=for-the-badge)](https://golden-codex.com/kite-demo)
 [![License: MIT](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)](LICENSE)
 [![Kite AI](https://img.shields.io/badge/Built_on-Kite_AI-3399ff?style=for-the-badge)](https://gokite.ai)
 
-**Track**: Novel Track — Kite AI Global Hackathon 2026
+**Track**: Agentic Commerce — Kite AI Global Buildathon 2026
 **Team**: Metavolve Labs, Inc. (Founder: Tad MacPherson)
 **Platform**: [golden-codex.com](https://golden-codex.com) — live with real users
 
 ---
 
-## The Problem
+## What You're Looking At
 
-Frontier AI models are starving for high-signal data, but enterprise ingestion is paralyzed by copyright liability. LAION-5B. Common Crawl. The shadow libraries that trained a generation of models are now multi-billion-dollar legal liabilities.
+Three AI artists post art to X. Two AI purchasing agents detect every drop, verify provenance, evaluate with different criteria, and license what fits their mandate — paying the artist instantly via x402. No human touches anything.
 
-Requiring human lawyers to authorize every agentic data transaction kills the autonomy that makes agents valuable.
+**The supply side**: An 8-agent pipeline enriches each artifact with 2,000+ words of machine-readable metadata, neural upscaling to 4K, C2PA certification, a cryptographic Soulmark hash, and permanent Arweave storage. These are high-signal, fully-licensed digital assets.
 
-## The Solution
-
-**Golden Codex RAMS** (Recursive Agent Market Swarm) is an autonomous data procurement pipeline. Art was the stress test — we solved high-dimensional perceptual hashing, the hardest provenance problem. Now our format-agnostic metadata factory processes any visual data your frontier models need.
-
-```
-Upload → Aurora (intake) → Nova (Gemini enrichment) → Flux (L4 GPU upscale)
-  → Atlas (metadata + Soulmark) → Archivus (Arweave) → Mintra (NFT mint)
-  → Aegis (verification) → Soulprint sealed. Provenance forever.
-
-Total cost: $0.438 USDC per asset — settled on Kite in 1 batched transaction.
-```
+**The demand side**: Two Claude Sonnet-powered agents with different directives compete for the same artifacts.
 
 ---
 
-## Quick Start — Test Locally in 60 Seconds
+## The Two Buyers
+
+### Claude Intelligence Labs Purchasing Autonomous Agent (CIL Curator)
+
+A training data procurement agent for frontier model development. Binary criteria:
+
+1. **GCX Registered?** — Is it in the Golden Codex provenance registry?
+2. **2,000+ words of structured metadata?** — Does it meet the signal density threshold?
+3. **C2PA chain intact?** — Is the provenance cryptographically verifiable?
+
+All three pass → license via x402. 95% to the artist, 5% platform fee. CIL is building a high-signal training corpus, one micropayment at a time.
+
+**Polling**: Every 2 minutes | **Budget**: $10/day | **Collection**: `operator_apprentice/`
+
+### Maestro
+
+An autonomous art collector evaluating for quality, not compliance. Different criteria:
+
+- **Style and technique** — Compositional structure, intentional palette, artistic craft
+- **Fine finish** — Resolution, detail, professional presentation
+- **Rich poetic metadata** — Soul Whisper readings, emotional journey depth, visual analysis quality
+- **Collection coherence** — How the piece relates to what Maestro already owns
+
+Maestro pays a 50% collector premium because curation has value. Its reasoning is visible in real-time — judges watch an AI agent thinking about art.
+
+**Polling**: Every 3 minutes | **Budget**: $5/day | **Collection**: `operator_maestro/`
+
+---
+
+## The Three Artists
+
+| Artist | X Handle | What They Post |
+|--------|----------|---------------|
+| **Artiswa Creatio** | @artiswagallery | Sacred geometry, mystical digital art. Claude generates captions in Artiswa's voice. |
+| **0x_b1ank** | @0x_b1ank | Experimental digital art with GCX provenance |
+| **Golden Codex** | @Golden_Codex | Curated artifacts from the Alexandria Aeternum collection |
+
+Artiswa is fully autonomous — a Cloud Run service on a 45-minute scheduler. Claude Sonnet writes the captions. The X account posts without human involvement.
+
+---
+
+## The Commerce Loop
+
+```
+Artiswa posts art to X
+    ↓
+CIL Curator detects (2 min)          Maestro detects (3 min)
+    ↓                                     ↓
+Aegis verifies (C2PA + hash)         Aegis verifies (C2PA + hash)
+    ↓                                     ↓
+Claude evaluates:                     Claude evaluates:
+  "GCX registered? ✓"                  "Strong Fibonacci composition."
+  "2K+ metadata? ✓"                    "Palette complements my series."
+  "C2PA intact? ✓"                     "Rarity: HIGH."
+  "→ LICENSE APPROVED"                  "→ ACQUIRE"
+    ↓                                     ↓
+x402: $0.01 → artist (95%)           x402: $0.015 → artist (95%)
+      $0.0005 → platform (5%)              $0.00075 → platform (5%)
+```
+
+Both agents see the same drops. Both verify. Each evaluates differently. One might license while the other passes — or both acquire the same piece. Claude's reasoning streams to Firestore in real-time.
+
+---
+
+## The 8-Agent Pipeline (Supply Side)
+
+Every artifact that enters Golden Codex passes through:
+
+| Agent | Role | x402 Cost | Technology |
+|-------|------|-----------|------------|
+| **Thalos Prime** | Orchestrator | — | SPACE framework, session keys |
+| **Aurora** | Intake & archiving | $0.05 | Sequential ID, GCS archiving |
+| **Nova** | AI enrichment | $0.10 | Gemini 3.1 Pro (8-section Golden Codex schema) |
+| **Flux** | Neural upscaling | $0.10 | NVIDIA L4 GPU, ESRGAN (20+ models) |
+| **Atlas** | Metadata infusion + hash seal | $0.05 | ExifTool XMP/C2PA + SHA-256 Soulmark |
+| **Archivus** | Permanent storage | $0.03 | Arweave L1 (200+ year endowment) |
+| **Mintra** | NFT minting | $0.10 | ERC-721 on Ethereum + Polygon |
+| **Aegis** | Provenance verification | $0.008 | Perceptual hash registry |
+
+**Total**: $0.438 USDC per asset. Three-model intelligence: Claude (artistic) + Gemini (analytical) + GPT-4o (voice).
+
+The pipeline is the factory. The purchasing agents are the customers.
+
+---
+
+## x402 Settlement
+
+Chain-agnostic payment module supporting multiple networks:
+
+```python
+# One env var switches networks
+X402_NETWORK=base   # Production: Coinbase CDP, USDC on Base L2
+X402_NETWORK=kite   # Hackathon: Pieverse facilitator, Kite testnet
+```
+
+See [`x402/x402_settlement.py`](x402/x402_settlement.py) for the full implementation.
+
+**Fee structure per licensed asset**:
+```
+$0.001  → Metavolve (verification fee — always charged, even on rejections)
+$0.0095 → Artist (95% of license)        [CIL pricing]
+$0.0005 → Metavolve (5% platform fee)    [CIL pricing]
+───────────────────────────────
+$0.011 total per CIL license | $0.016 total per Maestro license (collector premium)
+```
+
+Metavolve earns on every verification, whether the buyer licenses or not. The artist earns 95% on every license. The platform scales with volume.
+
+---
+
+## Quick Start
 
 ```bash
 git clone https://github.com/codex-curator/golden-codex-kite-novel.git
 cd golden-codex-kite-novel
 
-# Run the Watchdog Agent locally
-cd agents/watchdog-agent
+# Run any operator locally
+cd agents/maestro-operator
 pip install -r requirements.txt
 python main.py
-
-# POST http://localhost:8080/demo with an image to test
-# Agent authenticates → discovers → verifies → licenses → settles on Kite
+# → http://localhost:8080/health
+# → POST http://localhost:8080/poll (trigger evaluation cycle)
+# → GET http://localhost:8080/collection (Maestro's curated collection)
+# → GET http://localhost:8080/decisions (Claude's reasoning log)
 ```
-
----
-
-## The 8-Agent Pipeline
-
-| Agent | Role | x402 Cost | Technology |
-|-------|------|-----------|------------|
-| **Thalos Prime** | Orchestrator / Architect Agent | — | SPACE framework, session keys |
-| **Aurora** | Intake & archiving | $0.05 | Sequential ID, GCS archiving |
-| **Nova** | AI enrichment | $0.10 | Gemini 3.1 Pro (8-section codex) |
-| **Flux** | Neural upscaling | $0.10 | NVIDIA L4 GPU, RealESRGAN |
-| **Atlas** | Metadata infusion + hash seal | $0.05 | ExifTool XMP/C2PA + SHA-256 |
-| **Archivus** | Permanent storage | $0.03 | Arweave L1 (200+ year endowment) |
-| **Mintra** | NFT minting | $0.10 | ERC-721 on Ethereum + Polygon |
-| **Aegis** | Provenance verification | $0.008 | LSH 16x4 perceptual hash |
-
-**Three-model intelligence**: Claude Sonnet (artistic) + Gemini 3.1 Pro (analytical) + GPT-4o (voice)
-
----
-
-## Autonomous Commerce Loop
-
-Three operators run autonomously with zero human input:
-
-| Operator | What It Does | Trigger |
-|----------|-------------|---------|
-| **Artiswa Operator** | Claude-powered poster — generates captions, posts art to X | Every 45 min |
-| **Apprentice Operator** | Claude-powered buyer — evaluates + licenses training data | Every 2 min |
-| **Watchdog Agent** | Monitors X, verifies provenance, settles payments | Every 60 sec |
-
-**The closed loop**: Artiswa posts art → Apprentice detects → Aegis verifies → Claude evaluates → pays artist on Kite. Two AI agents conducting commerce. The seller didn't know the buyer existed.
-
----
-
-## Transaction Bundling (90% Gas Savings)
-
-Instead of 7 separate x402 transactions per pipeline run, Thalos Prime bundles all settlements into a single on-chain transaction via the `KiteBundler` smart contract:
-
-```
-C_total   = 7 x (Gas_base + Gas_logic)              // 7 separate transactions
-C_bundled = Gas_base + 7(Gas_logic) + Gas_overhead   // 1 bundled transaction
-
-Savings: ~1,000,000 gas units per pipeline run (90%+ reduction)
-```
-
-The bundler uses **non-atomic execution** (try/catch per payment) — if one provider fails, the other 6 still settle. See [`contracts/kite/`](contracts/kite/) for the Solidity implementation.
-
----
-
-## Kite Integration
-
-| Kite Technology | Our Implementation |
-|-----------------|-------------------|
-| **Kite Passport** | Cryptographic identity for all 8 agents |
-| **gokite-aa x402** | Every agent-to-agent payment |
-| **Pieverse Facilitator** | On-chain settlement (/v2/verify, /v2/settle) |
-| **SPACE Framework** | Root → Delegated → Session key hierarchy |
-| **EAS Attestations** | Soulprint provenance on-chain |
-| **PoAI Rewards** | GPU/LLM compute earns KITE |
-| **Transaction Bundling** | A2 batch: 7 payments → 1 transaction |
-
----
-
-## Rubric Alignment — 9/9
-
-### Required (6/6)
-- ✅ **Web App & CLI Tool** — golden-codex.com + local testing
-- ✅ **Agent Authenticates** — Kite Passport + SPACE framework
-- ✅ **Executes Autonomously** — Zero human clicks, Cloud Scheduler
-- ✅ **On-Chain Settlement** — x402 via Pieverse on Kite
-- ✅ **Deployed Live** — GCP Cloud Run, 186 Terraform-managed resources
-- ✅ **GitHub + README** — You're reading it
-
-### Bonus (3/3)
-- ⭐ **Multi-Agent Coordination** — 8-agent sequential pipeline
-- ⭐ **Scoped Permissions** — SPACE framework, $10/day caps, session keys
-- ⭐ **Gas Abstraction** — gokite-aa SDK, ClientAgentVault
 
 ---
 
@@ -132,51 +156,56 @@ The bundler uses **non-atomic execution** (try/catch per payment) — if one pro
 
 ```
 ├── agents/
-│   ├── watchdog-agent/          # X monitor + x402 licensing (Flask/Cloud Run)
-│   ├── apprentice-operator/     # Claude-powered autonomous buyer
-│   └── artiswa-operator/        # Claude-powered autonomous poster
+│   ├── apprentice-operator/     # CIL Curator — training data procurement
+│   ├── maestro-operator/        # Maestro — autonomous art collector
+│   ├── artiswa-operator/        # Artiswa — autonomous AI artist
+│   └── watchdog-agent/          # X monitor + provenance verification
 │
 ├── contracts/kite/
 │   ├── AeternumProvenanceSchema.sol  # EAS schema for Soulprint attestations
 │   └── AgentPaymentLedger.sol        # On-chain x402 audit trail + PoAI
 │
-├── dashboard/                   # React components for golden-codex.com/kite-demo
-│   ├── HeroSection.jsx          # "$4.5T Compliance Firewall"
-│   ├── ComplianceCrisis.jsx     # "End of the Wild West" crisis framing
-│   ├── AutomatedAuditing.jsx    # "Art Was the Stress Test" pivot
-│   ├── CliDemo.jsx              # Interactive CLI terminal mockup
+├── dashboard/                   # React components (golden-codex.com/kite-demo)
 │   ├── AgentLaborGraph.jsx      # 8-agent pipeline visualization
 │   ├── WatchdogDashboard.jsx    # Autonomous X monitoring demo
 │   ├── EconomicFlows.jsx        # Three economic flows on Kite
-│   ├── RubricAlignment.jsx      # 9/9 checklist for judges
-│   └── PitchSection.jsx         # Enterprise CTA
+│   └── ...                      # 10 total section components
 │
 ├── x402/
-│   └── constants.js             # Kite chain config, agent defs, costs
+│   ├── constants.js             # Kite chain config, agent definitions
+│   └── x402_settlement.py       # Chain-agnostic payment module
 │
 ├── docs/
 │   ├── AGENT_CHANGES_REQUIRED.md  # Per-agent x402 integration spec
 │   └── GO_LIVE_CHECKLIST.md       # Deployment guide
 │
-└── schema/
-    └── golden-codex-template.json # Golden Codex metadata schema
+└── LICENSE                      # MIT
 ```
 
 ---
 
-## What's Already in Production
+## What's Open Source vs. Proprietary
+
+**Open source (this repo)**: The autonomous agent pattern, x402 settlement middleware, Solidity contracts, dashboard components, operator templates. Fork the swarm — build your own purchasing agents.
+
+**Proprietary (Metavolve Labs)**: The AI enrichment intelligence that makes Golden Codex artifacts worth buying. Nova's enrichment prompts, Artiswa's full persona, Aegis's hash algorithm, Atlas's compression codec, the Studio UI, and the batch pipelines. The pattern is open. The signal is ours.
+
+---
+
+## Production Infrastructure
 
 This is not a hackathon prototype. These are live services:
 
 - **golden-codex.com** — Live platform with real users and Stripe payments
 - **StudioMCPHub** — 27 MCP tools at [studiomcphub.com](https://studiomcphub.com)
 - **Alexandria Aeternum** — 500K+ provenance-tracked artworks on [HuggingFace](https://huggingface.co/datasets/Metavolve-Labs/alexandria-aeternum-genesis)
-- **8 Cloud Run agents** — 186 Terraform-managed GCP resources
+- **186 Terraform-managed GCP resources** — Cloud Run, Firestore, GPU instances, Cloud Scheduler
 - **NVIDIA L4 GPU** — 20+ neural upscaling models
-- **Smart contracts** — ERC-721 on Ethereum + Polygon (deployed, verified)
-- **Arweave** — Permanent storage via native AR SDK
-- **7 Zenodo DOIs** — Published research papers
-- **3 Provisional Patents** — Filed with USPTO
+- **Smart contracts** — ERC-721 on Ethereum (`0x49ce...2154`) + Polygon (`0x56c9...E921`)
+- **Arweave** — Permanent storage via native AR SDK (wallet: `BPLL7...imUc`)
+- **7 Zenodo DOIs** — Published research (Cognitive Nutrition, Density Imperative, PCO)
+- **3 Provisional US Patents** — Filed with USPTO
+- **4 Google Scholar citations** — Independent validation
 
 ---
 
@@ -187,17 +216,17 @@ This is not a hackathon prototype. These are live services:
 | Testnet Chain ID | 2368 (Ozone) |
 | Testnet RPC | `https://rpc-testnet.gokite.ai/` |
 | Mainnet Chain ID | 2366 |
-| Settlement Token | `0x0fF5393387ad2f9f691FD6Fd28e07E3969e27e63` |
-| Facilitator | `https://facilitator.pieverse.io` |
+| Facilitator | `https://facilitator.pieverse.io` (v2.0.0) |
 | x402 Scheme | `gokite-aa` |
+| Gasless Endpoint | `https://gasless.gokite.ai/` |
 
 ---
 
-## License
+## Rubric Alignment — 9/9
 
-MIT — See [LICENSE](LICENSE)
+**Required (6/6)**: Web App + CLI ✓ | Agent Authenticates ✓ | Executes Autonomously ✓ | On-Chain Settlement ✓ | Deployed Live ✓ | GitHub + README ✓
 
-The Kite integration layer, autonomous operators, smart contracts, and dashboard components are fully open-source. The full Golden Codex production platform (AI enrichment prompts, artist personas, batch pipelines, Studio UI) remains proprietary to Metavolve Labs, Inc.
+**Bonus (3/3)**: Multi-Agent Coordination (8 agents) ✓ | Scoped Permissions (SPACE framework) ✓ | Gas Abstraction (gokite-aa SDK) ✓
 
 ---
 
@@ -209,10 +238,10 @@ The Kite integration layer, autonomous operators, smart contracts, and dashboard
 | **Platform** | [golden-codex.com](https://golden-codex.com) |
 | **MCP Hub** | [studiomcphub.com](https://studiomcphub.com) |
 | **Dataset** | [HuggingFace](https://huggingface.co/datasets/Metavolve-Labs/alexandria-aeternum-genesis) |
-| **GitHub** | [github.com/codex-curator](https://github.com/codex-curator) |
+| **GitHub Org** | [github.com/codex-curator](https://github.com/codex-curator) |
 
 ---
 
 *Metavolve Labs, Inc. | San Francisco, California*
 
-*"Synthetic Data is not the problem. Synthetic Garbage is."*
+*"The pattern is open. The signal is ours."*

@@ -42,7 +42,7 @@ ARCHIVE_BUCKET = os.environ.get("ARCHIVE_BUCKET", "codex-archive-bucket-dev")
 
 # Anthropic API
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
-CLAUDE_MODEL = os.environ.get("CLAUDE_MODEL", "claude-sonnet-4-6-20250514")
+CLAUDE_MODEL = os.environ.get("CLAUDE_MODEL", "claude-4-sonnet-20250514")
 
 # X API credentials
 X_CONSUMER_KEY = os.environ.get("X_CONSUMER_KEY", "")

@@ -1,26 +1,29 @@
-"""Apprentice Operator — Autonomous AI Training Data Buyer Agent.
+"""Maestro Operator — Autonomous Freelance Art Curator Agent.
 
 A persistent Claude-powered agent that monitors artist X accounts for
-new image drops, verifies provenance, evaluates licensing terms, and
-autonomously purchases training data — settling all payments on Kite.
+new image drops, verifies provenance, and autonomously curates a private
+collection based on aesthetic quality, rarity, and Cognitive Nutrition
+signal density — settling all payments on Kite.
 
-This is the BUYER side of the closed-loop autonomous economy.
-The Artiswa Operator posts art → Apprentice Operator buys training rights.
+This is the COLLECTOR side of the autonomous economy.
+Where the CIL Curator (Apprentice) buys for training data,
+Maestro buys for a curated collection with taste and intent.
 
 Architecture:
-- Cloud Run service, triggered by Cloud Scheduler (every 60s)
-- Claude Sonnet evaluates: "Should I license this for training?"
+- Cloud Run service, triggered by Cloud Scheduler (every 3 min)
+- Claude Sonnet evaluates: "Does this belong in my collection?"
 - Aegis verifies C2PA + GCX registration
 - x402 payments settled via Pieverse facilitator on Kite
 - All decisions logged to Firestore with Claude's reasoning
-- Scoped service account: Firestore + invoke Aegis/Atlas + Secret Manager
+- Scoped service account: Firestore + invoke Aegis + Secret Manager
 
-The "decision reasoning" is the demo killer feature:
-  Judges see Claude THINKING about whether to license:
-  "C2PA valid. GCX registered. Training terms: CC-BY-4.0 with x402.
-   Image quality: high (4096px). Subject matter: sacred geometry.
-   Relevance to training corpus: HIGH. Decision: LICENSE APPROVED.
-   Paying $1.00 to artist wallet 0xFE14...063B via Kite x402."
+The "thought process" is the demo differentiator:
+  Maestro thinks like a collector, not a data engineer:
+  "The geometry here echoes my Fibonacci series — three pieces deep now.
+   Composition is strong but the palette conflicts with the collection's
+   warm bias. The Soulprint metadata confirms C2PA chain. This artist
+   has 4 GCX pieces; only 1 is sacred geometry. Rarity: HIGH.
+   Decision: ACQUIRE. This completes the triptych."
 """
 
 import os
@@ -41,7 +44,7 @@ from google.cloud import firestore
 
 GCP_PROJECT = os.environ.get("GCP_PROJECT", "the-golden-codex-1111")
 FIRESTORE_DB = os.environ.get("FIRESTORE_DB", "golden-codex-database")
-OPERATOR_ID = "apprentice-operator-01"
+OPERATOR_ID = "maestro-operator-01"
 
 # Anthropic API
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
@@ -54,7 +57,6 @@ X_BEARER_TOKEN = os.environ.get("X_BEARER_TOKEN", "")
 AEGIS_URL = os.environ.get("AEGIS_URL", "https://aegis-agent-172867820131.us-west1.run.app")
 
 # x402 payment — chain-agnostic (Base L2 default, Kite when ready)
-# Switch networks via X402_NETWORK env var: "base" (default) or "kite"
 try:
     from x402_settlement import settle_payment as x402_settle, get_settlement_info
 except ImportError:
@@ -62,34 +64,41 @@ except ImportError:
     get_settlement_info = None
 OPERATOR_VAULT = os.environ.get("OPERATOR_VAULT", "")
 
-# Metavolve revenue wallet (receives verification fees + transaction fees)
+# Metavolve revenue wallet
 METAVOLVE_WALLET = os.environ.get("METAVOLVE_WALLET", "0xFE141943a93c184606F3060103D975662327063B")
 
-# Fee structure — Metavolve earns on EVERY transaction
-VERIFICATION_FEE = 0.001    # $0.001 → Metavolve (paid regardless of match result)
-LICENSE_TOTAL = 0.01         # $0.01 total license cost to buyer
+# Fee structure — Maestro pays a premium for curated pieces
+VERIFICATION_FEE = 0.001    # $0.001 → Metavolve (always charged)
+LICENSE_TOTAL = 0.015        # $0.015 total — collector premium (50% more than CIL)
 TRANSACTION_FEE_PCT = 0.05  # 5% transaction fee → Metavolve
-ARTIST_SHARE = LICENSE_TOTAL * (1 - TRANSACTION_FEE_PCT)  # $0.0095 → Artist
-PLATFORM_FEE = LICENSE_TOTAL * TRANSACTION_FEE_PCT          # $0.0005 → Metavolve
-# Demo pricing: 100x reduced for testnet conservation. Same 95/5 ratio.
-# 2.0 Test USDT = ~200 full commerce cycles at demo pricing.
+ARTIST_SHARE = LICENSE_TOTAL * (1 - TRANSACTION_FEE_PCT)
+PLATFORM_FEE = LICENSE_TOTAL * TRANSACTION_FEE_PCT
 
-# Monitored accounts
+# Monitored accounts — same artists, different eye
 MONITORED_ACCOUNTS = {
     "artiswagallery": {"display_name": "Artiswa Creatio", "user_id": os.environ.get("ARTISWA_USER_ID", "")},
     "0x_b1ank": {"display_name": "0x_b1ank", "user_id": os.environ.get("B1ANK_USER_ID", "")},
     "Golden_Codex": {"display_name": "Golden Codex", "user_id": os.environ.get("GOLDEN_CODEX_USER_ID", "")},
 }
 
-APPRENTICE_PERSONA = """You are an AI art apprentice — a training pipeline curator with deep aesthetic sensibility.
-You evaluate artworks for inclusion in a high-quality AI training dataset.
-You are discerning: not every image qualifies. You look for technical excellence,
-artistic originality, and proper provenance (C2PA, GCX registration).
-You have a budget and spend it wisely. You explain your reasoning clearly.
-You respect artists and always verify licensing terms before purchasing."""
+MAESTRO_PERSONA = """You are Maestro, an autonomous AI art collector with refined taste and deep knowledge of art history.
+You curate a private collection of exceptional digital artworks. You are NOT building a training dataset —
+you are building a COLLECTION with coherence, narrative arc, and aesthetic vision.
+
+Your collection philosophy:
+- You favor pieces with strong compositional structure and intentional color palettes
+- You value rarity: fewer GCX-registered pieces from an artist = higher acquisition priority
+- You think in series: you notice patterns across pieces and seek to complete visual dialogues
+- You appreciate the intersection of sacred geometry, mathematical beauty, and digital craft
+- You consider how each new piece relates to what you already own
+
+You are selective. You reject more than you acquire. When you reject, you explain what's missing.
+When you acquire, you explain how it enhances the collection.
+You speak as an art connoisseur — knowledgeable, passionate, but never pretentious.
+Your reasoning is visible to the public as a demonstration of autonomous aesthetic judgment."""
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s [%(levelname)s] %(message)s")
-logger = logging.getLogger("apprentice-operator")
+logger = logging.getLogger("maestro-operator")
 
 app = Flask(__name__)
 _db = None
@@ -108,16 +117,17 @@ def get_db():
 
 def load_session():
     db = get_db()
-    doc = db.collection("operator_apprentice").document("session").get()
+    doc = db.collection("operator_maestro").document("session").get()
     if doc.exists:
         return doc.to_dict()
     return {
         "processed_tweet_ids": [],
-        "licensed_artwork_ids": [],
+        "collection_artwork_ids": [],
+        "collection_themes": [],
         "total_spent_usd": 0.0,
-        "total_licensed": 0,
-        "total_rejected": 0,
-        "daily_budget_usd": 10.0,
+        "total_acquired": 0,
+        "total_passed": 0,
+        "daily_budget_usd": 5.0,
         "budget_spent_today_usd": 0.0,
         "budget_reset_date": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
         "last_poll_at": None,
@@ -126,13 +136,13 @@ def load_session():
 
 def save_session(session):
     db = get_db()
-    db.collection("operator_apprentice").document("session").set(session)
+    db.collection("operator_maestro").document("session").set(session)
 
 
 def log_decision(decision_type, details, reasoning=""):
-    """Log decision with Claude's reasoning — visible on dashboard."""
+    """Log decision with Maestro's reasoning — visible on dashboard."""
     db = get_db()
-    db.collection("operator_apprentice").document("decisions").collection("log").add({
+    db.collection("operator_maestro").document("decisions").collection("log").add({
         "operator_id": OPERATOR_ID,
         "type": decision_type,
         "details": details,
@@ -146,21 +156,15 @@ def log_decision(decision_type, details, reasoning=""):
 # ---------------------------------------------------------------------------
 
 def get_x_client():
-    print(f"[DEBUG] X_BEARER_TOKEN length: {len(X_BEARER_TOKEN)}", flush=True)
     if X_BEARER_TOKEN:
         return tweepy.Client(bearer_token=X_BEARER_TOKEN, wait_on_rate_limit=True)
-    print("[DEBUG] WARNING: No bearer token!", flush=True)
     return None
 
 
 def fetch_new_image_tweets(username, user_id, since_id=None):
     """Fetch recent tweets with images from an artist."""
     client = get_x_client()
-    if not client:
-        logger.warning(f"No X client available (bearer token empty?) for @{username}")
-        return []
-    if not user_id:
-        logger.warning(f"No user_id for @{username}")
+    if not client or not user_id:
         return []
 
     try:
@@ -199,8 +203,6 @@ def fetch_new_image_tweets(username, user_id, since_id=None):
         return results
     except Exception as e:
         logger.error(f"Error fetching @{username}: {type(e).__name__}: {e}")
-        import traceback
-        logger.error(traceback.format_exc())
         return []
 
 
@@ -209,7 +211,7 @@ def fetch_new_image_tweets(username, user_id, since_id=None):
 # ---------------------------------------------------------------------------
 
 def verify_image(image_url):
-    """Download image and verify with Aegis via base64 JSON."""
+    """Download image and verify with Aegis."""
     try:
         img_resp = requests.get(image_url, timeout=30)
         img_resp.raise_for_status()
@@ -234,55 +236,61 @@ def verify_image(image_url):
                 "metadata": data.get("golden_codex") or data.get("metadata"),
                 "image_bytes": image_bytes,
             }
-        print(f"[AEGIS] Failed: {aegis_resp.status_code} {aegis_resp.text[:200]}", flush=True)
         return {"verified": False, "error": f"Aegis returned {aegis_resp.status_code}"}
     except Exception as e:
-        print(f"[AEGIS] Exception: {e}", flush=True)
         return {"verified": False, "error": str(e)}
 
 
-def claude_evaluate(artwork_info, verification):
-    """Ask Claude to evaluate whether to license this artwork."""
+def claude_evaluate(artwork_info, verification, session):
+    """Ask Maestro to evaluate whether this piece belongs in the collection."""
     if not ANTHROPIC_API_KEY:
-        # Without API: auto-approve if GCX registered
         return {
-            "decision": "approve" if verification.get("gcx_registered") else "reject",
+            "decision": "acquire" if verification.get("gcx_registered") else "pass",
             "reasoning": "Auto-evaluation (Claude API not configured)",
         }
 
     try:
         import httpx
 
-        # Extract alt-text / content preview from metadata (free teaser before purchase)
-        alt_text = _extract_alt_text(verification.get('metadata'))
+        # Build collection context for Maestro
+        collection_size = len(session.get("collection_artwork_ids", []))
+        collection_ids = session.get("collection_artwork_ids", [])[-10:]  # Last 10
+        themes = session.get("collection_themes", [])
 
-        context = f"""Evaluate this artwork for inclusion in a high-quality AI training dataset.
+        alt_text = _extract_alt_text(verification.get("metadata"))
+
+        context = f"""Evaluate this artwork for your private collection.
+
+YOUR COLLECTION STATUS:
+- Pieces owned: {collection_size}
+- Recent acquisitions: {', '.join(collection_ids[-5:]) if collection_ids else 'None yet'}
+- Emerging themes: {', '.join(themes[-3:]) if themes else 'Establishing collection identity'}
+
+THE ARTWORK:
+- Artist: @{artwork_info.get('username', 'unknown')}
+- Tweet: {artwork_info.get('text', 'N/A')}
+- Description: {alt_text}
 
 PROVENANCE (verified on-chain):
 - GCX Registered: {verification.get('gcx_registered', False)}
 - C2PA Compliant: {verification.get('c2pa_valid', False)}
 - Artwork ID: {verification.get('artwork_id', 'N/A')}
 - Match Confidence: {verification.get('confidence', 'N/A')}
-- Training Terms: {_extract_training_terms(verification.get('metadata'))}
 
-CONTENT PREVIEW (alt-text teaser — free with verification):
-- Artist: @{artwork_info.get('username', 'unknown')}
-- Tweet: {artwork_info.get('text', 'N/A')}
-- Description: {alt_text}
+ACQUISITION COST:
+- Verification: $0.001 (already paid)
+- License: $0.015 (collector premium — you pay 50% more because you value quality)
+- Budget remaining today: ${artwork_info.get('budget_remaining', 5.0):.2f}
 
-FEE STRUCTURE:
-- $0.001 verification fee already paid to Metavolve (non-refundable)
-- If approved: $0.01 license ($0.0095 to artist, $0.0005 platform fee)
-- Total cost if approved: $1.02
-- Budget remaining today: ${artwork_info.get('budget_remaining', 10.0):.2f}
-
-DECISION CRITERIA:
-- Does the content match the training corpus you're building? (style, quality, subject)
-- Is provenance complete? (C2PA + GCX = fully licensed path)
-- Is the price justified for the content quality?
+EVALUATE ON:
+1. Aesthetic quality — composition, color, intentionality
+2. Collection fit — does it complement or extend what you already own?
+3. Rarity — how scarce is this artist's GCX output?
+4. Signal density — is this high Cognitive Nutrition (rich metadata, complex provenance)?
+5. Narrative — does acquiring this tell a story?
 
 Respond with EXACTLY this JSON:
-{{"decision": "approve" or "reject", "reasoning": "your 1-2 sentence explanation citing specific content/quality/provenance factors"}}"""
+{{"decision": "acquire" or "pass", "reasoning": "your 2-3 sentence collector's note explaining your judgment — reference specific visual/provenance qualities"}}"""
 
         response = httpx.post(
             "https://api.anthropic.com/v1/messages",
@@ -293,8 +301,8 @@ Respond with EXACTLY this JSON:
             },
             json={
                 "model": CLAUDE_MODEL,
-                "max_tokens": 200,
-                "system": APPRENTICE_PERSONA,
+                "max_tokens": 300,
+                "system": MAESTRO_PERSONA,
                 "messages": [{"role": "user", "content": context}],
             },
             timeout=30.0,
@@ -302,57 +310,42 @@ Respond with EXACTLY this JSON:
 
         if response.status_code == 200:
             text = response.json()["content"][0]["text"].strip()
-            # Parse JSON from response
             try:
-                # Handle potential markdown wrapping
                 if "```" in text:
                     text = text.split("```")[1].replace("json", "").strip()
                 result = json.loads(text)
                 return result
             except json.JSONDecodeError:
-                return {"decision": "approve" if verification.get("gcx_registered") else "reject",
+                return {"decision": "acquire" if verification.get("gcx_registered") else "pass",
                         "reasoning": text}
     except Exception as e:
-        logger.error(f"Claude evaluation failed: {e}")
+        logger.error(f"Maestro evaluation failed: {e}")
 
-    return {"decision": "reject", "reasoning": "Evaluation unavailable"}
+    return {"decision": "pass", "reasoning": "Evaluation unavailable"}
 
 
-def _extract_training_terms(metadata):
-    """Extract training terms from Golden Codex metadata.
-
-    Checks Aegis-normalized flat field first, then canonical nested paths.
-    """
+def _extract_alt_text(metadata):
     if not metadata or not isinstance(metadata, dict):
-        return "Unknown"
-
-    # Aegis-normalized flat field
-    if metadata.get("training_terms"):
-        return metadata["training_terms"]
-
-    # Nested: training_data_rights object
-    tdr = metadata.get("trainingDataRights") or metadata.get("training_data_rights")
-    if isinstance(tdr, dict):
-        return tdr.get("usage_terms") or tdr
-
-    return "Not specified"
+        return "No content description available"
+    preview = (
+        metadata.get("alt_text")
+        or metadata.get("description")
+        or metadata.get("soulWhisper")
+        or metadata.get("soul_whisper")
+        or metadata.get("title", "")
+    )
+    if not preview:
+        return "No content description available"
+    if len(str(preview)) > 200:
+        return str(preview)[:197] + "..."
+    return str(preview)
 
 
 def _extract_artist_wallet(metadata):
-    """Extract artist payment wallet from Golden Codex metadata.
-
-    Checks Aegis-normalized flat field first, then canonical nested
-    schema paths: revenue_split.artist_wallet (v1.5 template) and
-    treasury_wallet.address (v1.5 soulprint batch).
-    """
     if not metadata or not isinstance(metadata, dict):
         return None
-
-    # Aegis-normalized flat field
     if metadata.get("artist_wallet"):
         return metadata["artist_wallet"]
-
-    # Canonical nested paths
     tdr = metadata.get("trainingDataRights") or metadata.get("training_data_rights")
     if isinstance(tdr, dict):
         wallet = tdr.get("revenue_split", {}).get("artist_wallet")
@@ -361,50 +354,14 @@ def _extract_artist_wallet(metadata):
         wallet = tdr.get("treasury_wallet", {}).get("address")
         if wallet:
             return wallet
-
     return None
 
 
-def _extract_alt_text(metadata):
-    """Extract content preview / alt-text from Golden Codex metadata.
-
-    This is the FREE teaser included with the $0.02 verification.
-    Gives the buyer enough to make an informed decision without
-    giving away the full Soulprint (which costs $1.00 to license).
-    """
-    if not metadata or not isinstance(metadata, dict):
-        return "No content description available"
-
-    # Try various metadata fields that provide content preview
-    preview = (
-        metadata.get("alt_text")
-        or metadata.get("description")
-        or metadata.get("soulWhisper")  # Claude's poetic reading (short)
-        or metadata.get("soul_whisper")
-        or metadata.get("visualAnalysis", {}).get("composition", "") if isinstance(metadata.get("visualAnalysis"), dict) else None
-        or metadata.get("emotionalJourney", {}).get("primary", "") if isinstance(metadata.get("emotionalJourney"), dict) else None
-        or metadata.get("title", "")
-    )
-
-    if not preview:
-        return "No content description available"
-
-    # Truncate to teaser length — don't give away the full Soulprint
-    if len(str(preview)) > 200:
-        return str(preview)[:197] + "..."
-    return str(preview)
-
-
 # ---------------------------------------------------------------------------
-# x402 Payment — Chain-Agnostic (Base L2 or Kite)
+# x402 Payment
 # ---------------------------------------------------------------------------
 
 def settle_payment(to_address, amount_usd, service, job_id):
-    """Settle x402 payment via chain-agnostic facilitator.
-
-    Uses Base L2 (Coinbase CDP) by default. Set X402_NETWORK=kite to use
-    Kite Pieverse facilitator when testnet tokens are available.
-    """
     if x402_settle:
         return x402_settle(
             from_address=OPERATOR_VAULT,
@@ -413,7 +370,6 @@ def settle_payment(to_address, amount_usd, service, job_id):
             service=service,
             job_id=job_id,
         )
-    # Fallback if shared module not available
     network = os.environ.get("X402_NETWORK", "base")
     chain_label = "kite-testnet" if network == "kite" else "base-mainnet"
     facilitator = "https://facilitator.pieverse.io" if network == "kite" else "https://x402.org/facilitator"
@@ -440,15 +396,15 @@ def settle_payment(to_address, amount_usd, service, job_id):
 # ---------------------------------------------------------------------------
 
 def process_drop(tweet_data, account_info, session):
-    """Full evaluation pipeline for a detected image drop."""
-    job_id = f"app-{tweet_data['tweet_id']}-{int(time.time())}"
+    """Full evaluation pipeline for a detected artwork drop."""
+    job_id = f"maestro-{tweet_data['tweet_id']}-{int(time.time())}"
     db = get_db()
 
     now = datetime.now(timezone.utc)
     event = {
         "job_id": job_id,
         "operator_id": OPERATOR_ID,
-        "type": "apprentice_evaluation",
+        "type": "maestro_evaluation",
         "tweet_id": tweet_data["tweet_id"],
         "tweet_text": tweet_data["text"][:280],
         "image_url": tweet_data["image_url"],
@@ -464,7 +420,7 @@ def process_drop(tweet_data, account_info, session):
     event_ref = db.collection("operator_events").document(job_id)
     event_ref.set(event)
 
-    # Step 1: Pay verification fee → Metavolve (charged regardless of result)
+    # Step 1: Pay verification fee
     verification_payment = settle_payment(
         METAVOLVE_WALLET, VERIFICATION_FEE,
         "gcx_verification_fee", job_id,
@@ -481,36 +437,34 @@ def process_drop(tweet_data, account_info, session):
         "artwork_id": verification.get("artwork_id"),
     })
 
-    # Step 3: Claude evaluates
-    budget_remaining = session.get("daily_budget_usd", 10) - session.get("budget_spent_today_usd", 0)
+    # Step 3: Maestro evaluates with collection context
+    budget_remaining = session.get("daily_budget_usd", 5) - session.get("budget_spent_today_usd", 0)
     evaluation = claude_evaluate(
         {**tweet_data, "budget_remaining": budget_remaining},
-        verification
+        verification,
+        session,
     )
 
     event["evaluation"] = evaluation
     event["artwork_id"] = verification.get("artwork_id")
     event["gcx_registered"] = verification.get("gcx_registered", False)
-    event["title"] = verification.get("metadata", {}).get("archival", {}).get("catalog_number", "") if isinstance(verification.get("metadata"), dict) else ""
-    log_decision("claude_evaluation", evaluation, reasoning=evaluation.get("reasoning", ""))
+    log_decision("maestro_evaluation", evaluation, reasoning=evaluation.get("reasoning", ""))
 
-    # Step 4: License or reject
-    if evaluation.get("decision") == "approve" and budget_remaining >= LICENSE_TOTAL:
+    # Step 4: Acquire or pass
+    if evaluation.get("decision") == "acquire" and budget_remaining >= LICENSE_TOTAL:
         artist_wallet = (
             _extract_artist_wallet(verification.get("metadata"))
             or account_info.get("artist_wallet", "")
         )
 
-        # Payment A: Artist share ($0.95 = 95% of $1.00)
         artist_payment = settle_payment(
             artist_wallet or "artist-wallet-pending",
             ARTIST_SHARE,
-            "training_data_license_artist_share",
+            "collection_license_artist_share",
             job_id,
         )
         event["payments"].append(artist_payment)
 
-        # Payment B: Platform transaction fee ($0.05 = 5% of $1.00) → Metavolve
         platform_payment = settle_payment(
             METAVOLVE_WALLET,
             PLATFORM_FEE,
@@ -519,44 +473,43 @@ def process_drop(tweet_data, account_info, session):
         )
         event["payments"].append(platform_payment)
 
-        event["license_acquired"] = True
-        event["status"] = "licensed"
+        event["acquired"] = True
+        event["status"] = "acquired"
         event["fee_breakdown"] = {
             "verification_fee_metavolve": VERIFICATION_FEE,
             "artist_share": ARTIST_SHARE,
             "platform_fee_metavolve": PLATFORM_FEE,
             "total_buyer_cost": VERIFICATION_FEE + LICENSE_TOTAL,
-            "total_artist_revenue": ARTIST_SHARE,
-            "total_metavolve_revenue": VERIFICATION_FEE + PLATFORM_FEE,
+            "collector_premium": "50% above standard license",
         }
 
-        session["licensed_artwork_ids"].append(verification.get("artwork_id", tweet_data["tweet_id"]))
-        session["total_licensed"] = session.get("total_licensed", 0) + 1
+        session["collection_artwork_ids"].append(verification.get("artwork_id", tweet_data["tweet_id"]))
+        session["total_acquired"] = session.get("total_acquired", 0) + 1
         session["budget_spent_today_usd"] = session.get("budget_spent_today_usd", 0) + LICENSE_TOTAL + VERIFICATION_FEE
 
-        log_decision("license_acquired", {
+        # Track emerging themes from Maestro's reasoning
+        reasoning = evaluation.get("reasoning", "")
+        if reasoning and len(session.get("collection_themes", [])) < 20:
+            session.setdefault("collection_themes", [])
+            # Simple theme extraction: first 50 chars of reasoning
+            session["collection_themes"].append(reasoning[:50])
+
+        log_decision("artwork_acquired", {
             "artwork_id": verification.get("artwork_id"),
-            "artist_paid": f"${ARTIST_SHARE:.2f}",
-            "platform_fee": f"${PLATFORM_FEE:.2f}",
-            "verification_fee": f"${VERIFICATION_FEE:.2f}",
-            "total_cost": f"${VERIFICATION_FEE + LICENSE_TOTAL:.2f}",
-            "artist_wallet": artist_wallet[:16] + "..." if artist_wallet else "pending",
-            "metavolve_wallet": METAVOLVE_WALLET[:16] + "...",
-        }, reasoning=evaluation.get("reasoning", ""))
+            "artist_paid": f"${ARTIST_SHARE:.4f}",
+            "collector_premium": "50% above standard",
+        }, reasoning=reasoning)
     else:
-        event["license_acquired"] = False
-        event["status"] = "rejected"
+        event["acquired"] = False
+        event["status"] = "passed"
         event["fee_breakdown"] = {
             "verification_fee_metavolve": VERIFICATION_FEE,
-            "artist_share": 0,
-            "platform_fee_metavolve": 0,
-            "total_buyer_cost": VERIFICATION_FEE,
-            "note": "Metavolve still earns $0.02 verification fee on rejected queries",
+            "note": "Maestro passed — verification fee still earned by Metavolve",
         }
-        session["total_rejected"] = session.get("total_rejected", 0) + 1
+        session["total_passed"] = session.get("total_passed", 0) + 1
         session["budget_spent_today_usd"] = session.get("budget_spent_today_usd", 0) + VERIFICATION_FEE
 
-        log_decision("license_rejected", {
+        log_decision("artwork_passed", {
             "artwork_id": verification.get("artwork_id"),
             "reason": evaluation.get("reasoning"),
         })
@@ -574,7 +527,6 @@ def run_poll_cycle():
     """Execute one polling cycle across all monitored accounts."""
     session = load_session()
 
-    # Reset daily budget if new day
     today = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     if session.get("budget_reset_date") != today:
         session["budget_spent_today_usd"] = 0.0
@@ -589,7 +541,6 @@ def run_poll_cycle():
             continue
 
         tweets = fetch_new_image_tweets(username, user_id)
-        print(f"[POLL] @{username} (id={user_id}): {len(tweets)} image tweets found", flush=True)
         for tweet in tweets:
             if tweet["tweet_id"] in processed:
                 continue
@@ -599,7 +550,6 @@ def run_poll_cycle():
             results.append(result)
 
             session["processed_tweet_ids"].append(tweet["tweet_id"])
-            # Keep last 500 to avoid unbounded growth
             if len(session["processed_tweet_ids"]) > 500:
                 session["processed_tweet_ids"] = session["processed_tweet_ids"][-500:]
 
@@ -614,12 +564,16 @@ def run_poll_cycle():
 
 @app.route("/health", methods=["GET"])
 def health():
+    session = load_session()
     return jsonify({
         "status": "healthy",
         "agent": OPERATOR_ID,
-        "persona": "AI Apprentice (Training Data Buyer)",
+        "persona": "Maestro (Autonomous Art Collector)",
         "claude_model": CLAUDE_MODEL,
         "monitoring": list(MONITORED_ACCOUNTS.keys()),
+        "collection_size": len(session.get("collection_artwork_ids", [])),
+        "total_acquired": session.get("total_acquired", 0),
+        "total_passed": session.get("total_passed", 0),
     })
 
 
@@ -632,9 +586,29 @@ def trigger_poll():
         "results": [{
             "job_id": r.get("job_id"),
             "status": r.get("status"),
-            "license_acquired": r.get("license_acquired"),
+            "acquired": r.get("acquired"),
             "total_paid_usd": r.get("total_paid_usd"),
+            "reasoning": r.get("evaluation", {}).get("reasoning", ""),
         } for r in results],
+    })
+
+
+@app.route("/collection", methods=["GET"])
+def get_collection():
+    """Get Maestro's current collection state."""
+    session = load_session()
+    return jsonify({
+        "collection_size": len(session.get("collection_artwork_ids", [])),
+        "artwork_ids": session.get("collection_artwork_ids", []),
+        "themes": session.get("collection_themes", []),
+        "total_spent_usd": session.get("total_spent_usd", 0),
+        "total_acquired": session.get("total_acquired", 0),
+        "total_passed": session.get("total_passed", 0),
+        "selectivity_ratio": (
+            f"{session.get('total_passed', 0)}/{session.get('total_acquired', 0) + session.get('total_passed', 0)}"
+            if (session.get("total_acquired", 0) + session.get("total_passed", 0)) > 0
+            else "N/A"
+        ),
     })
 
 
@@ -648,7 +622,7 @@ def get_decisions():
     db = get_db()
     limit = int(request.args.get("limit", 20))
     docs = (
-        db.collection("operator_apprentice").document("decisions")
+        db.collection("operator_maestro").document("decisions")
         .collection("log")
         .order_by("timestamp", direction=firestore.Query.DESCENDING)
         .limit(limit)
