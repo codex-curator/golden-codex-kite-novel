@@ -51,8 +51,8 @@ NETWORK_CONFIGS = {
         "settlement_token": "0x0fF5393387ad2f9f691FD6Fd28e07E3969e27e63",  # Test USDT (18 decimals)
         "facilitator_url": "https://facilitator.pieverse.io",
         "decimals": 18,
-        "scheme": "gokite-aa",
-        "network_id": "kite-testnet",
+        "scheme": "exact",  # Pieverse v2 uses "exact" (gokite-aa is the AA SDK, not the x402 scheme)
+        "network_id": "eip155:2368",
     },
 }
 
@@ -118,43 +118,25 @@ def settle_payment(
         return record
 
     try:
-        if net["scheme"] == "gokite-aa":
-            # Kite Pieverse facilitator
-            resp = requests.post(
-                f"{net['facilitator_url']}/v2/settle",
-                json={
-                    "authorization": {
-                        "from": from_address,
-                        "to": to_address,
-                        "amount": amount_atomic,
-                        "token": net["settlement_token"],
-                    },
-                    "network": net["network_id"],
-                },
-                timeout=30,
-            )
-        else:
-            # Base L2 / Coinbase CDP facilitator (x402.org)
-            resp = requests.post(
-                f"{net['facilitator_url']}/settle",
-                json={
-                    "x402Version": 2,
-                    "paymentPayload": {
-                        "from": from_address,
-                        "to": to_address,
-                        "amount": amount_atomic,
-                    },
-                    "paymentRequirements": {
-                        "scheme": "exact",
-                        "network": net["network_id"],
-                        "asset": net["settlement_token"],
-                        "amount": amount_atomic,
-                        "payTo": to_address,
-                        "maxTimeoutSeconds": 300,
-                    },
-                },
-                timeout=30,
-            )
+        # Both Pieverse (Kite) and Coinbase CDP (Base) use v2 envelope format
+        endpoint = f"{net['facilitator_url']}/v2/settle"
+        payload = {
+            "x402Version": 2,
+            "paymentPayload": {
+                "from": from_address,
+                "to": to_address,
+                "amount": amount_atomic,
+            },
+            "paymentRequirements": {
+                "scheme": net["scheme"],
+                "network": net["network_id"],
+                "asset": net["settlement_token"],
+                "amount": amount_atomic,
+                "payTo": to_address,
+                "maxTimeoutSeconds": 300,
+            },
+        }
+        resp = requests.post(endpoint, json=payload, timeout=30)
 
         if resp.status_code == 200:
             result = resp.json()

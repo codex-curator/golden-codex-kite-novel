@@ -118,7 +118,7 @@ export default function HeroSection({ onLaunchDemo }) {
           </div>
           <div className="flex items-center gap-2 px-4 py-2 bg-white/5 border border-white/10 rounded-full">
             <Network className="w-4 h-4 text-white/60" />
-            <span className="text-sm text-white/60 font-semibold">Novel Track</span>
+            <span className="text-sm text-white/60 font-semibold">Agentic Commerce + Novel</span>
           </div>
         </motion.div>
 
@@ -154,9 +154,9 @@ export default function HeroSection({ onLaunchDemo }) {
           className="text-base text-gray-500 mb-4 max-w-2xl mx-auto"
         >
           Frontier AI models are starving for high-signal data, but enterprise ingestion is
-          paralyzed by copyright liability. Golden Codex RAMS is an autonomous, 8-agent
-          procurement swarm that discovers, cryptographically verifies, and legally licenses
-          enterprise data — settling instantly via Kite x402 micropayments.
+          paralyzed by copyright liability. Golden Codex RAMS (Recursive Agent Market Swarm) is a scalable
+          autonomous procurement swarm — AI agents that discover, cryptographically verify, and legally license
+          high-signal data, settling instantly via Kite x402 micropayments.
         </motion.p>
 
         {/* Secondary body */}
@@ -181,7 +181,7 @@ export default function HeroSection({ onLaunchDemo }) {
             className="group flex items-center gap-2 px-8 py-3.5 bg-gradient-to-r from-[#0066cc] to-[#0052a3] text-white font-bold rounded-lg hover:from-[#3399ff] hover:to-[#0066cc] transition-all shadow-lg shadow-[#0066cc]/25"
           >
             <Play className="w-5 h-5" />
-            Launch Pipeline Demo
+            Watch Agents Trade
             <ChevronDown className="w-4 h-4 group-hover:translate-y-0.5 transition-transform" />
           </button>
           <a
@@ -194,25 +194,7 @@ export default function HeroSection({ onLaunchDemo }) {
           </a>
         </motion.div>
 
-        {/* Stats row */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 1 }}
-          className="mt-16 grid grid-cols-2 md:grid-cols-4 gap-6 max-w-3xl mx-auto"
-        >
-          {[
-            { value: '8', label: 'Autonomous Agents' },
-            { value: '500K+', label: 'Verified Assets' },
-            { value: '$0.44', label: 'Per Asset' },
-            { value: 'x402', label: 'On-Chain Settlement' },
-          ].map((stat, i) => (
-            <div key={i} className="text-center">
-              <div className="text-2xl md:text-3xl font-bold text-[#3399ff]">{stat.value}</div>
-              <div className="text-xs text-gray-500 mt-1">{stat.label}</div>
-            </div>
-          ))}
-        </motion.div>
+
       </div>
 
       {/* Scroll indicator */}

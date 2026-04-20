@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:
+  aegis-mock:
+    build: ./aegis-mock
+    container_name: rams-aegis
+    ports:
+      - "5002:5002"
+    environment:
+      - PYTHONUNBUFFERED=1
+    networks:
+      - rams
+
+  artiswa:
+    build: ./artiswa
+    container_name: rams-artiswa
+    volumes:
+      - shared-feed:/feed
+    environment:
+      - PYTHONUNBUFFERED=1
+      - KITE_CHAIN_ID=2368
+      - KITE_RPC=https://rpc-testnet.gokite.ai/
+      - SETTLEMENT_TOKEN=0x0fF5393387ad2f9f691FD6Fd28e07E3969e27e63
+      - FACILITATOR=https://facilitator.pieverse.io
+      - WALLET_ADDRESS=0xFE141943a93c184606F3060103D975662327063B
+    depends_on:
+      - aegis-mock
+    networks:
+      - rams
+
+  apprentice:
+    build: ./apprentice
+    container_name: rams-apprentice
+    volumes:
+      - shared-feed:/feed
+    environment:
+      - PYTHONUNBUFFERED=1
+      - AEGIS_URL=http://aegis-mock:5002
+      - KITE_CHAIN_ID=2368
+      - KITE_RPC=https://rpc-testnet.gokite.ai/
+      - SETTLEMENT_TOKEN=0x0fF5393387ad2f9f691FD6Fd28e07E3969e27e63
+      - FACILITATOR=https://facilitator.pieverse.io
+      - WALLET_ADDRESS=0x6fc0A8d050dAF686e93e2eb0Fa1e41f5D8DE1E1E
+    depends_on:
+      - aegis-mock
+      - artiswa
+    networks:
+      - rams
+
+volumes:
+  shared-feed:
+
+networks:
+  rams:
+    driver: bridge

@@ -1,0 +1,13 @@
+{
+  "name": "rams-cli",
+  "version": "1.0.0",
+  "description": "RAMS Local Lite -- Autonomous AI art commerce demo for Kite hackathon",
+  "scripts": {
+    "start": "docker-compose up --build",
+    "stop": "docker-compose down",
+    "clean": "docker-compose down -v --rmi local"
+  },
+  "keywords": ["kite", "x402", "autonomous-agents", "ai-art", "provenance"],
+  "author": "Metavolve Labs, Inc.",
+  "license": "MIT"
+}
