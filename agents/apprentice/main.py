@@ -1,26 +1,33 @@
-"""Apprentice Operator — Autonomous AI Training Data Buyer Agent.
+"""Apprentice Operator — Tactical Execution Agent under Maestra's mandate.
 
-A persistent Claude-powered agent that monitors artist X accounts for
-new image drops, verifies provenance, evaluates licensing terms, and
-autonomously purchases training data — settling all payments on Kite.
+Apprentice is the tactical layer of the Frontier Lab procurement stack. Where
+Maestra holds the strategic mandate (budget, tier, domain), Apprentice handles
+the operational tactics — watching X accounts for new Aeternum drops, verifying
+provenance via Aegis, executing the Phase 1 perceptual-hash search settlement,
+and reporting verified candidates upstream.
 
-This is the BUYER side of the closed-loop autonomous economy.
-The Artiswa Operator posts art → Apprentice Operator buys training rights.
+This is the EXECUTION side of the closed-loop Frontier Lab procurement.
+The artists drop art on X → Apprentice detects + hash-verifies → Maestra
+orders the Aeternum Sour cocktail + reasons + decides + settles + amends AO.
+
+Apprentice / Maestra collaboration is the agent-to-agent commerce pattern Kite
+was designed for: two Kite Passport-attested agents executing on a single
+mandate, with each transaction cryptographically isolated by ephemeral session
+keys.
 
 Architecture:
 - Cloud Run service, triggered by Cloud Scheduler (every 60s)
-- Claude Sonnet evaluates: "Should I license this for training?"
-- Aegis verifies C2PA + GCX registration
-- x402 payments settled via Pieverse facilitator on Kite
-- All decisions logged to Firestore with Claude's reasoning
-- Scoped service account: Firestore + invoke Aegis/Atlas + Secret Manager
+- Claude Sonnet evaluates: "Does this candidate match Maestra's mandate filters?"
+- Aegis verifies C2PA + GCX registration via perceptual hash (LSH 16×4)
+- x402 Phase 1 hash-search fee settled on Base mainnet (Kite Passport routing)
+- All decisions logged to Firestore with Claude reasoning visible
+- Verified candidates passed upstream to Maestra
 
 The "decision reasoning" is the demo killer feature:
-  Judges see Claude THINKING about whether to license:
-  "C2PA valid. GCX registered. Training terms: CC-BY-4.0 with x402.
-   Image quality: high (4096px). Subject matter: sacred geometry.
-   Relevance to training corpus: HIGH. Decision: LICENSE APPROVED.
-   Paying $1.00 to artist wallet 0xFE14...063B via Kite x402."
+  Judges see Claude THINKING through the tactical screen:
+  "C2PA valid. GCX-AAt-07 confirmed in Aegis registry. Training-rights-cleared.
+   Match confidence 0.97. Domain match: vision-training. Forwarding to Maestra
+   for cocktail-primed forensic evaluation."
 """
 
 import os
