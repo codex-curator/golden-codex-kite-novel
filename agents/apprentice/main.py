@@ -624,7 +624,7 @@ def health():
     return jsonify({
         "status": "healthy",
         "agent": OPERATOR_ID,
-        "persona": "AI Apprentice (Training Data Buyer)",
+        "persona": "Apprentice (Tactical Execution Agent under Maestra's mandate)",
         "claude_model": CLAUDE_MODEL,
         "monitoring": list(MONITORED_ACCOUNTS.keys()),
     })
