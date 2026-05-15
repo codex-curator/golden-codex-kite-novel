@@ -1,0 +1,114 @@
+version: "3.9"
+
+# Golden Codex × Kite — Maestra (Frontier Lab AI Purchasing Agent) stack
+#
+# Three services on the autonomous-commerce loop:
+#
+#   gcx-bar     — Cognitive Nutrition Bar (Flask, x402 v2)
+#                 Always reproducible — runs in STUB MODE without secrets.
+#
+#   apprentice  — tactical agent (X-watcher + hash verify + x402 settle)
+#                 Needs X_BEARER_TOKEN + ANTHROPIC_API_KEY to do real work.
+#
+#   maestra     — strategic procurement brain (Claude Sonnet reasoning)
+#                 Needs ANTHROPIC_API_KEY. Talks to gcx-bar + register-api.
+#
+# Quickstart:
+#   cp .env.example .env
+#   # Edit .env — add your secrets, or leave them empty for stub mode
+#   docker-compose up --build
+#
+# Endpoint cheatsheet:
+#   curl http://localhost:8080/menu                            (gcx-bar)
+#   curl -i http://localhost:8080/dose?cocktail=aeternum-sour  (gcx-bar — 402 expected)
+#   curl -X POST http://localhost:8081/poll                    (apprentice)
+#   curl -X POST http://localhost:8082/poll                    (maestra)
+#   curl http://localhost:8082/health                          (maestra)
+
+services:
+
+  gcx-bar:
+    build: ./services/gcx-bar
+    image: gcx-bar:local
+    container_name: gcx-bar
+    ports:
+      - "8080:8080"
+    environment:
+      # Settlement target — Metavolve treasury wallet on Base mainnet
+      GCX_BAR_PAY_TO: "${GCX_BAR_PAY_TO:-0xFE141943a93c184606F3060103D975662327063B}"
+      GCX_BAR_NETWORK: "${GCX_BAR_NETWORK:-eip155:8453}"
+      GCX_BAR_ASSET: "${GCX_BAR_ASSET:-0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913}"
+      # STUB MODE if facilitator URL is empty — accepts any X-Payment header.
+      # For production, point at https://facilitator.pieverse.io or Kite-native facilitator.
+      GCX_BAR_FACILITATOR_URL: "${GCX_BAR_FACILITATOR_URL:-}"
+      GCX_BAR_BASE_URL: "${GCX_BAR_BASE_URL:-http://localhost:8080}"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request; urllib.request.urlopen('http://localhost:8080/health').read()"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+
+  apprentice:
+    build: ./agents/apprentice
+    image: kite-apprentice:local
+    container_name: kite-apprentice
+    ports:
+      - "8081:8080"
+    environment:
+      OPERATOR_ID: "apprentice-operator-01"
+      GCP_PROJECT: "${GCP_PROJECT:-the-golden-codex-1111}"
+      FIRESTORE_DB: "${FIRESTORE_DB:-golden-codex-database}"
+      X_BEARER_TOKEN: "${X_BEARER_TOKEN:-}"
+      ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY:-}"
+      CLAUDE_MODEL: "${CLAUDE_MODEL:-claude-4-sonnet-20250514}"
+      AEGIS_URL: "${AEGIS_URL:-https://aegis-agent-172867820131.us-west1.run.app}"
+      REGISTER_API_URL: "${REGISTER_API_URL:-https://register-api-mrxpfmpeia-uw.a.run.app}"
+      OPERATOR_VAULT: "${OPERATOR_VAULT:-}"
+      METAVOLVE_WALLET: "${METAVOLVE_WALLET:-0xFE141943a93c184606F3060103D975662327063B}"
+      X402_NETWORK: "${X402_NETWORK:-base}"
+      # Mount your GCP service-account JSON if running with Firestore
+      GOOGLE_APPLICATION_CREDENTIALS: "/secrets/gcp-sa.json"
+    volumes:
+      - ${GCP_SA_PATH:-/dev/null}:/secrets/gcp-sa.json:ro
+    depends_on:
+      - gcx-bar
+    restart: unless-stopped
+
+  maestra:
+    build: ./agents/maestra
+    image: kite-maestra:local
+    container_name: kite-maestra
+    ports:
+      - "8082:8080"
+    environment:
+      OPERATOR_ID: "maestra-operator-01"
+      GCP_PROJECT: "${GCP_PROJECT:-the-golden-codex-1111}"
+      FIRESTORE_DB: "${FIRESTORE_DB:-golden-codex-database}"
+      X_BEARER_TOKEN: "${X_BEARER_TOKEN:-}"
+      ANTHROPIC_API_KEY: "${ANTHROPIC_API_KEY:-}"
+      CLAUDE_MODEL: "${CLAUDE_MODEL:-claude-4-sonnet-20250514}"
+      AEGIS_URL: "${AEGIS_URL:-https://aegis-agent-172867820131.us-west1.run.app}"
+      REGISTER_API_URL: "${REGISTER_API_URL:-https://register-api-mrxpfmpeia-uw.a.run.app}"
+      GCX_BAR_URL: "http://gcx-bar:8080"
+      OPERATOR_VAULT: "${OPERATOR_VAULT:-}"
+      METAVOLVE_WALLET: "${METAVOLVE_WALLET:-0xFE141943a93c184606F3060103D975662327063B}"
+      X402_NETWORK: "${X402_NETWORK:-base}"
+      # Maestra mandate — Frontier Lab procurement parameters
+      MAESTRA_MANDATE_BUDGET_USD: "${MAESTRA_MANDATE_BUDGET_USD:-250}"
+      MAESTRA_MANDATE_TIER: "${MAESTRA_MANDATE_TIER:-tier-1-gcx-certified}"
+      MAESTRA_MANDATE_DOMAIN: "${MAESTRA_MANDATE_DOMAIN:-vision-training}"
+      MAESTRA_AUTONOMOUS_MODE: "${MAESTRA_AUTONOMOUS_MODE:-true}"
+      # Demo pricing — override testnet 100x-reduced fees to real demo numbers
+      DEMO_PRICING_VERIFY: "${DEMO_PRICING_VERIFY:-0.01}"
+      DEMO_PRICING_COCKTAIL: "${DEMO_PRICING_COCKTAIL:-0.01}"
+      DEMO_PRICING_LICENSE: "${DEMO_PRICING_LICENSE:-1.00}"
+      DEMO_PRICING_ARTIST_SHARE: "${DEMO_PRICING_ARTIST_SHARE:-0.95}"
+      DEMO_PRICING_PLATFORM_FEE: "${DEMO_PRICING_PLATFORM_FEE:-0.05}"
+      GOOGLE_APPLICATION_CREDENTIALS: "/secrets/gcp-sa.json"
+    volumes:
+      - ${GCP_SA_PATH:-/dev/null}:/secrets/gcp-sa.json:ro
+    depends_on:
+      - gcx-bar
+      - apprentice
+    restart: unless-stopped
