@@ -5,7 +5,8 @@
 > An autonomous Frontier Lab procurement agent that hunts Tier-1 GCX-certified training data 24/7, orders dense-context cocktails for its own pre-purchase analysis, and settles every transaction on Base mainnet via Kite Passport + x402 — bridging Kite's agent economy into the Arweave/AO permanent-state substrate.
 
 **Submission deadline:** 2026-05-18 04:59 AM PT
-**Live platform:** [golden-codex.com](https://golden-codex.com) · **Live demo URL:** [golden-codex.com/kite-live](https://golden-codex.com/kite-live) *(deployed Sun PM)*
+**Live status page:** [golden-codex.com/kite-live.html](https://golden-codex.com/kite-live.html) **← LIVE**
+**Live GCX Cocktail Bar:** [gcx-bar-172867820131.us-west1.run.app](https://gcx-bar-172867820131.us-west1.run.app/menu) **← LIVE on Cloud Run**
 **Anchor receipts (Base mainnet):** `0x09deffc1…7623` ($0.01 weather, 2026-04-29) · `0xa8c7f3fc…840886` (gcx-bar smoke test, 2026-04-29)
 **License:** MIT — agents and the Cognitive Nutrition Bar are open source.
 
