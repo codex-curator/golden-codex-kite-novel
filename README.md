@@ -10,6 +10,8 @@
 **Anchor receipts (Base mainnet):** `0x09deffc1…7623` ($0.01 weather, 2026-04-29) · `0xa8c7f3fc…840886` (gcx-bar smoke test, 2026-04-29)
 **License:** MIT — agents and the Cognitive Nutrition Bar are open source.
 
+![Maestra architecture — Apprentice + Maestra + GCX Cocktail Bar + Aegis + AO Registrar + Base mainnet](docs/architecture.png)
+
 ---
 
 ## The 90-second demo
@@ -257,10 +259,11 @@ Open `docs/kite-live.html` in any browser — single-file, no build, no deps. Re
 
 ### Visual architecture
 
-The diagram is `docs/architecture.mmd` (Mermaid format). Render to PNG via:
+`docs/architecture.png` (embedded above) is rendered from the Mermaid source at `docs/architecture.mmd`. To re-render after edits:
 
 ```bash
-npx -p @mermaid-js/mermaid-cli mmdc -i docs/architecture.mmd -o docs/architecture.png -t dark -b transparent
+echo '{"args": ["--no-sandbox"]}' > /tmp/puppeteer-config.json
+npx -p @mermaid-js/mermaid-cli mmdc -i docs/architecture.mmd -o docs/architecture.png -t dark -b transparent -p /tmp/puppeteer-config.json
 ```
 
 ---
