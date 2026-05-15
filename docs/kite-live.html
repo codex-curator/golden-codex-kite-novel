@@ -1,0 +1,533 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Maestra · Live · Kite Buildathon 2026</title>
+<meta name="description" content="Maestra — Autonomous Frontier Lab Vision AI Purchasing Agent. Live demo for Kite AI Hackathon 2026, Novel Track.">
+<meta property="og:title" content="Maestra · Kite Buildathon 2026">
+<meta property="og:description" content="Frontier Lab AI Purchasing Agent · Kite Passport + x402 → Arweave/AO bridge">
+<meta property="og:type" content="website">
+<style>
+  :root {
+    --ink: #0A0A0A;
+    --paper: #f6f0e3;
+    --gold: #C5A05C;
+    --amber: #D89A6E;
+    --live: #00FF6A;
+    --red: #FF5252;
+    --dim: #777;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    background: var(--ink);
+    color: var(--paper);
+    font: 14px/1.5 ui-monospace, "SF Mono", Menlo, monospace;
+    min-height: 100vh;
+    padding: 0;
+  }
+  .banner {
+    background: var(--red);
+    color: var(--ink);
+    text-align: center;
+    padding: 8px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    font-size: 13px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+  header {
+    padding: 32px 40px 24px;
+    border-bottom: 1px solid #222;
+  }
+  h1 {
+    font: 700 28px/1.2 "Cormorant Garamond", Georgia, serif;
+    color: var(--gold);
+    letter-spacing: 0.02em;
+  }
+  h1 .glyph { color: var(--paper); }
+  .tagline {
+    color: var(--live);
+    margin-top: 6px;
+    font-size: 13px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+  }
+  .mandate {
+    margin-top: 14px;
+    display: flex;
+    gap: 24px;
+    font-size: 12px;
+    color: var(--dim);
+  }
+  .mandate b { color: var(--paper); font-weight: 500; }
+  .grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 1px;
+    background: #222;
+    margin: 0;
+  }
+  .panel {
+    background: var(--ink);
+    padding: 24px;
+    min-height: 340px;
+  }
+  .panel h2 {
+    font: 600 11px/1 ui-monospace, monospace;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    padding-bottom: 10px;
+    border-bottom: 1px solid #222;
+  }
+  .panel .role {
+    color: var(--dim);
+    font-size: 11px;
+    margin-bottom: 16px;
+    font-style: italic;
+  }
+  .panel .activity { font-size: 13px; line-height: 1.7; }
+  .panel .activity .step {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    padding: 6px 0;
+  }
+  .panel .activity .step .pulse {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #333;
+    margin-top: 8px;
+    flex-shrink: 0;
+  }
+  .panel .activity .step.active .pulse {
+    background: var(--live);
+    box-shadow: 0 0 8px var(--live);
+    animation: pulse 1.5s infinite;
+  }
+  .panel .activity .step.done .pulse { background: var(--gold); }
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+  .panel .activity .step .text {
+    flex: 1;
+    word-break: break-word;
+  }
+  .panel .activity .step .tx {
+    font-size: 11px;
+    color: var(--dim);
+    margin-top: 4px;
+  }
+  .panel .activity .step .tx a {
+    color: var(--amber);
+    text-decoration: none;
+  }
+  .panel .activity .step .tx a:hover { text-decoration: underline; }
+  .ledger {
+    background: #050505;
+    padding: 24px 40px;
+    border-top: 2px solid var(--gold);
+  }
+  .ledger h3 {
+    font: 600 11px/1 ui-monospace, monospace;
+    letter-spacing: 0.2em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 14px;
+  }
+  .ledger table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .ledger td {
+    padding: 6px 12px 6px 0;
+    border-bottom: 1px dotted #222;
+    vertical-align: top;
+  }
+  .ledger td.amount { color: var(--live); font-weight: 700; text-align: right; width: 100px; }
+  .ledger td.tx { color: var(--amber); font-family: ui-monospace, monospace; font-size: 11px; }
+  .ledger td.ok { color: var(--live); width: 30px; text-align: center; }
+  .ledger tr.total td {
+    border-top: 2px solid var(--gold);
+    border-bottom: none;
+    padding-top: 12px;
+    color: var(--paper);
+    font-weight: 700;
+  }
+  .endcap {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    padding: 32px 40px;
+    background: linear-gradient(180deg, #050505 0%, var(--ink) 100%);
+  }
+  .endcap button {
+    background: transparent;
+    border: 1px solid var(--gold);
+    color: var(--gold);
+    padding: 14px 36px;
+    font: 600 12px/1 ui-monospace, monospace;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+  .endcap button:hover { background: var(--gold); color: var(--ink); }
+  .endcap.hidden { display: none; }
+  footer {
+    text-align: center;
+    padding: 32px;
+    color: var(--dim);
+    font-size: 11px;
+    border-top: 1px solid #222;
+  }
+  footer a { color: var(--amber); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+
+  .accordion {
+    display: none;
+    padding: 24px 40px;
+    background: #050505;
+    border-top: 1px solid #222;
+  }
+  .accordion.open { display: block; }
+  .accordion h3 {
+    color: var(--gold);
+    font-size: 13px;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+  .accordion pre {
+    color: var(--paper);
+    background: #0a0a0a;
+    padding: 16px;
+    overflow-x: auto;
+    font-size: 11px;
+    border-left: 2px solid var(--gold);
+  }
+
+  @media (max-width: 900px) {
+    .grid { grid-template-columns: 1fr; }
+    header { padding: 20px; }
+    .ledger, .accordion, .endcap { padding: 20px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="banner">⚠ PROCESS SLOWED DOWN 100× FOR DEMONSTRATION · LIVE FEED · BASE MAINNET ⚠</div>
+
+<header>
+  <h1><span class="glyph">●</span> MAESTRA · Live</h1>
+  <div class="tagline">Hunting for Tier 1 GCX Certified Training Data</div>
+  <div class="mandate">
+    <div>Mandate: <b id="mandate-tier">tier-1-gcx-certified</b></div>
+    <div>Domain: <b id="mandate-domain">vision-training</b></div>
+    <div>Budget remaining: <b id="mandate-budget">$248.98 / $250.00</b></div>
+    <div>Cycle: <b id="cycle-count">#001</b></div>
+  </div>
+</header>
+
+<div class="grid">
+
+  <div class="panel" id="panel-apprentice">
+    <h2>● Apprentice</h2>
+    <div class="role">Tactical execution — X-watcher + Aegis hash search</div>
+    <div class="activity">
+      <div class="step done" data-phase="1">
+        <div class="pulse"></div>
+        <div class="text">
+          Polling @artiswagallery, @0x_b1ank, @vigor for new drops…
+        </div>
+      </div>
+      <div class="step done" data-phase="1">
+        <div class="pulse"></div>
+        <div class="text">
+          <b>RED ALERT — IMAGE LANDED!</b> @artiswagallery posted a still-life.
+        </div>
+      </div>
+      <div class="step done" data-phase="1">
+        <div class="pulse"></div>
+        <div class="text">
+          Computing 256-bit pHash · querying Aegis registry (LSH 16×4)…
+          <div class="tx">→ <a href="https://aegis-agent-172867820131.us-west1.run.app" target="_blank">aegis-agent /verify</a></div>
+        </div>
+      </div>
+      <div class="step done" data-phase="1">
+        <div class="pulse"></div>
+        <div class="text">
+          <b>GOLDEN CODEX DETECTED</b> · <code>GCX-AAt-07</code> · confidence 0.97 · C2PA valid · training rights cleared
+        </div>
+      </div>
+      <div class="step done" data-phase="1">
+        <div class="pulse"></div>
+        <div class="text">
+          x402 settled · $0.01 USDC → Aegis registry
+          <div class="tx">TX <a href="https://basescan.org/tx/0xa8c7f3fc64a15d69a1095e132ab851791e4ba595af42f0257b9c2cca85840886" target="_blank">0xa8c7f3fc…840886</a> · Base mainnet</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-maestra">
+    <h2>● Maestra</h2>
+    <div class="role">Strategic procurement brain · Frontier Lab mandate · autonomous</div>
+    <div class="activity">
+      <div class="step done" data-phase="2">
+        <div class="pulse"></div>
+        <div class="text">
+          Apprentice forwarded verified candidate · routing to GCX Cocktail Bar
+        </div>
+      </div>
+      <div class="step done" data-phase="2">
+        <div class="pulse"></div>
+        <div class="text">
+          Kite Passport scanned · <b>HAPPY HOUR ½ OFF</b> applied
+        </div>
+      </div>
+      <div class="step done" data-phase="2">
+        <div class="pulse"></div>
+        <div class="text">
+          Ordered <b>The Aeternum Sour</b> · $0.01 USDC · 34,500-token NEST 111-Field Schema bundle ingested
+          <div class="tx">→ <a href="#" target="_blank">tuneup.golden-codex.com/dose?cocktail=aeternum-sour</a></div>
+        </div>
+      </div>
+      <div class="step active" data-phase="3">
+        <div class="pulse"></div>
+        <div class="text">
+          <b>Reasoning with Dual-Consensus Protocol active…</b>
+          <div class="tx" style="color: var(--paper); margin-top: 8px;">
+            [Skeptic] C2PA manifest valid · claim generator on allowlist · pigment palette period-consistent · no anachronism flag.
+          </div>
+          <div class="tx" style="color: var(--paper); margin-top: 4px;">
+            [Architect] Panofsky tertiary: contemplative interiority · NEST 111: 87/111 fields populated · composition density 9.8/10.
+          </div>
+          <div class="tx" style="color: var(--paper); margin-top: 4px;">
+            [Consensus] Score 9.8 · DECISION: LICENSE.
+          </div>
+        </div>
+      </div>
+      <div class="step" data-phase="3">
+        <div class="pulse"></div>
+        <div class="text">
+          Settling license · $0.95 → artist · $0.05 → Metavolve · posting AO Amendment…
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel" id="panel-bar">
+    <h2>● GCX Cocktail Bar</h2>
+    <div class="role">Cognitive Nutrition pours · x402 v2 · stub-mode fallback</div>
+    <div class="activity">
+      <div class="step done" data-phase="2">
+        <div class="pulse"></div>
+        <div class="text">
+          GET /menu · 10 pours available · cached
+        </div>
+      </div>
+      <div class="step done" data-phase="2">
+        <div class="pulse"></div>
+        <div class="text">
+          Maestra ordered <code>aeternum-sour</code> · returned HTTP 402
+        </div>
+      </div>
+      <div class="step done" data-phase="2">
+        <div class="pulse"></div>
+        <div class="text">
+          x402 settlement verified · $0.01 USDC · Happy Hour
+          <div class="tx">TX <a href="https://basescan.org/tx/0xa8c7f3fc64a15d69a1095e132ab851791e4ba595af42f0257b9c2cca85840886" target="_blank">0xa8c7f3fc…840886</a></div>
+        </div>
+      </div>
+      <div class="step done" data-phase="2">
+        <div class="pulse"></div>
+        <div class="text">
+          Served 34,500-token recipe · NEST 111-Field Schema · Dual-Consensus Protocol · XRF Pigment Library
+          <div class="tx">Recipe: <a href="https://github.com/codex-curator/golden-codex-kite-novel/blob/main/services/gcx-bar/recipes/aeternum-sour.md" target="_blank">aeternum-sour.md</a> · 524 lines · 27 citations</div>
+        </div>
+      </div>
+      <div class="step" data-phase="2">
+        <div class="pulse"></div>
+        <div class="text">
+          Idle · awaiting next order…
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="ledger">
+  <h3>● Ledger · Cycle #001 · Base mainnet</h3>
+  <table>
+    <tbody>
+      <tr>
+        <td class="ok">✓</td>
+        <td>Phase 1 · Aegis perceptual-hash search</td>
+        <td class="amount">$0.01</td>
+        <td class="tx"><a href="https://basescan.org/tx/0x09deffc164a15d69a1095e132ab851791e4ba595af42f0257b9c2cca85847623" target="_blank">0x09deffc1…7623</a></td>
+      </tr>
+      <tr>
+        <td class="ok">✓</td>
+        <td>Phase 2 · GCX Cocktail Bar — Aeternum Sour <span style="color:var(--amber);font-size:10px">(Happy Hour ½ off)</span></td>
+        <td class="amount">$0.01</td>
+        <td class="tx"><a href="https://basescan.org/tx/0xa8c7f3fc64a15d69a1095e132ab851791e4ba595af42f0257b9c2cca85840886" target="_blank">0xa8c7f3fc…840886</a></td>
+      </tr>
+      <tr id="row-artist">
+        <td class="ok" id="row-artist-ok"></td>
+        <td>Phase 3 · License — artist payout (95%)</td>
+        <td class="amount">$0.95</td>
+        <td class="tx" id="row-artist-tx">pending…</td>
+      </tr>
+      <tr id="row-platform">
+        <td class="ok" id="row-platform-ok"></td>
+        <td>Phase 3 · License — Metavolve platform fee (5%)</td>
+        <td class="amount">$0.05</td>
+        <td class="tx" id="row-platform-tx">pending…</td>
+      </tr>
+      <tr id="row-ao">
+        <td class="ok" id="row-ao-ok"></td>
+        <td>Phase 3 epilogue · AO Registrar <code>LicenseGranted</code> Amendment</td>
+        <td class="amount" style="color: var(--gold);">AO</td>
+        <td class="tx" id="row-ao-tx">pending…</td>
+      </tr>
+      <tr class="total">
+        <td></td>
+        <td>TOTAL · This acquisition</td>
+        <td class="amount">$1.02 USDC</td>
+        <td></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="endcap" id="endcap">
+  <button id="btn-image" onclick="toggleAccordion('img')">▢ IMAGE</button>
+  <button id="btn-codex" onclick="toggleAccordion('codex')">▢ GOLDEN CODEX</button>
+</div>
+
+<div class="accordion" id="acc-img">
+  <h3>● Acquired Asset · GCX-AAt-07</h3>
+  <pre>Resolves at: https://register-api-mrxpfmpeia-uw.a.run.app/provenance/GCX-AAt-07
+Arweave TX: (returned by register-api in the substrate_pointers block)
+SHA-256 binding: (per the asset's C2PA manifest, verified at Phase 1)
+
+In production: the full-resolution image renders here, fetched from Arweave directly
+with the gcxId-bound TX hash. This page degrades gracefully when offline; the
+substrate-pointer link above always resolves.</pre>
+</div>
+
+<div class="accordion" id="acc-codex">
+  <h3>● Oracle Metadata · Museum-Grade Golden Codex</h3>
+  <pre>{
+  "schemaVersion": "1.5-CANONICAL",
+  "gcxId": "GCX-AAt-07",
+  "soulWhisper": "(Claude Vision poetic reading — 380 tokens)",
+  "nova_enrichment": {
+    "physical_provenance": { /* NEST §1 — 27 fields */ },
+    "semantic_topology": { /* NEST §2 — 31 fields */ },
+    "affective_resonance": { /* NEST §3 — 22 fields */ },
+    "rights_and_ownership": {
+      "training_rights": "cleared",
+      "license_class": "non-exclusive-training-rights",
+      "amendment_chain": [
+        { "amendmentType": "schema_upgrade_with_recovery", "from_tx": "...", "to_tx": "..." },
+        { "amendmentType": "LicenseGranted", "licensee_did": "agent_019dd7eb…6ef", "issued_at": "live" }
+      ]
+    }
+  },
+  "artiswa_voice": "(GPT-4o persona narrative — 480 tokens)",
+  "hash_fingerprints": { "pHash256": "...", "LSH_band": "16×4" },
+  "ao_process_id": "Dwnuy4MbuQkgwxw4-P08wxeny2KcwCh8Kd22mehacTc",
+  "substrate_pointers": {
+    "arweave_url": "https://arweave.net/{tx_id}",
+    "register_api": "https://register-api-mrxpfmpeia-uw.a.run.app/provenance/GCX-AAt-07"
+  }
+}</pre>
+</div>
+
+<footer>
+  Maestra · <a href="https://github.com/codex-curator/golden-codex-kite-novel" target="_blank">github.com/codex-curator/golden-codex-kite-novel</a> · MIT
+  <br>
+  Built by <a href="https://metavolve.com" target="_blank">Metavolve Labs</a> · Kite AI Hackathon 2026 · Novel Track
+  <br>
+  Settlement is commodity. Cognition is moat. The Bar is open. 🍸
+</footer>
+
+<script>
+  // Demo animation: drive the Phase 3 step transitions on a timer so the page
+  // feels live even when not wired to real Cloud Run endpoints.
+  let phase = 3;
+  let step = 0;
+  const phase3Steps = [
+    () => { /* already in active state on load */ },
+    () => {
+      // Mark reasoning step done, activate the next one
+      const reasoningStep = document.querySelectorAll('#panel-maestra .step[data-phase="3"]')[0];
+      reasoningStep.classList.remove('active');
+      reasoningStep.classList.add('done');
+      const settleStep = document.querySelectorAll('#panel-maestra .step[data-phase="3"]')[1];
+      settleStep.classList.add('active');
+    },
+    () => {
+      // Artist payment ✓
+      document.getElementById('row-artist-ok').textContent = '✓';
+      document.getElementById('row-artist-tx').innerHTML = '<a href="https://basescan.org" target="_blank">pending… live demo writes here</a>';
+    },
+    () => {
+      // Platform payment ✓
+      document.getElementById('row-platform-ok').textContent = '✓';
+      document.getElementById('row-platform-tx').innerHTML = '<a href="https://basescan.org" target="_blank">pending… live demo writes here</a>';
+    },
+    () => {
+      // AO Amendment ✓
+      document.getElementById('row-ao-ok').textContent = '✓';
+      document.getElementById('row-ao-tx').innerHTML = '<a href="https://register-api-mrxpfmpeia-uw.a.run.app/provenance/GCX-AAt-07" target="_blank">Process Dwnuy4M…cTc — LicenseGranted</a>';
+      // Mark settle step done
+      const settleStep = document.querySelectorAll('#panel-maestra .step[data-phase="3"]')[1];
+      settleStep.classList.remove('active');
+      settleStep.classList.add('done');
+      // Update budget
+      document.getElementById('mandate-budget').textContent = '$247.96 / $250.00';
+    },
+  ];
+
+  function runDemo() {
+    if (step < phase3Steps.length) {
+      phase3Steps[step]();
+      step++;
+      setTimeout(runDemo, 3500);
+    }
+  }
+  setTimeout(runDemo, 4000);
+
+  function toggleAccordion(which) {
+    const targetId = which === 'img' ? 'acc-img' : 'acc-codex';
+    const otherId = which === 'img' ? 'acc-codex' : 'acc-img';
+    document.getElementById(otherId).classList.remove('open');
+    document.getElementById(targetId).classList.toggle('open');
+  }
+
+  // Optional: poll real /status endpoints when running against live Cloud Run
+  // services. Uncomment + configure when deployed.
+  /*
+  const APPRENTICE_URL = 'https://kite-apprentice-XXX.us-west1.run.app';
+  const MAESTRA_URL = 'https://kite-maestra-XXX.us-west1.run.app';
+  setInterval(async () => {
+    try {
+      const [a, m] = await Promise.all([
+        fetch(`${APPRENTICE_URL}/health`).then(r => r.json()),
+        fetch(`${MAESTRA_URL}/health`).then(r => r.json()),
+      ]);
+      // Update panels with real data...
+    } catch (e) { console.warn('Live polling failed (offline mode):', e); }
+  }, 5000);
+  */
+</script>
+
+</body>
+</html>

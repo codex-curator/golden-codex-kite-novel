@@ -1,0 +1,109 @@
+%% Maestra — Frontier Lab Vision AI Purchasing Agent
+%% Kite Buildathon 2026 · Novel Track · Metavolve Labs
+%% Render with: mmdc -i architecture.mmd -o architecture.png -t dark -b transparent
+
+flowchart TB
+    %% =========================================================
+    %% Sources
+    %% =========================================================
+    X["🐦 Artists on X<br/>@artiswagallery · @0x_b1ank · @vigor"]
+
+    %% =========================================================
+    %% Tactical layer
+    %% =========================================================
+    subgraph Tactical ["Apprentice · Tactical Execution Agent<br/>Cloud Run · Kite Passport-signed"]
+        APP_POLL["Poll cycle every 60s<br/>(Cloud Scheduler)"]
+        APP_HASH["Compute 256-bit pHash"]
+        APP_VERIFY["x402 → Aegis · $0.01"]
+    end
+
+    %% =========================================================
+    %% Aegis (existing)
+    %% =========================================================
+    AEGIS["🔍 Aegis Registry<br/>LSH 16×4 · C2PA<br/>GCX-registered check<br/>(existing Cloud Run)"]
+
+    %% =========================================================
+    %% Strategic layer
+    %% =========================================================
+    subgraph Strategic ["Maestra · Strategic Procurement Brain<br/>Cloud Run · Kite Passport-signed · Frontier Lab mandate"]
+        MAE_RECV["Receive verified candidate"]
+        MAE_BAR["x402 → GCX Bar · $0.01<br/>Order Aeternum Sour<br/>Kite Passport Happy Hour ½ off"]
+        MAE_THINK["Claude Sonnet<br/>+ Aeternum Sour scaffolding<br/>= Dual-Consensus Protocol<br/>Forensic Skeptic ⚔ Architect"]
+        MAE_DEC{"Decision"}
+        MAE_LIC["x402 → 2 atomic settlements<br/>$0.95 → artist · $0.05 → platform"]
+        MAE_AMEND["POST /amend<br/>register-api Cloud Function"]
+    end
+
+    %% =========================================================
+    %% Cocktail Bar
+    %% =========================================================
+    subgraph Bar ["GCX Cocktail Bar · services/gcx-bar/<br/>Flask · x402 v2 envelopes · Cloud Run us-west1"]
+        BAR_402["HTTP 402<br/>Payment Required"]
+        BAR_SERVE["34,500-token<br/>Aeternum Sour recipe<br/>NEST 111-Field Schema<br/>+ Pigment Library<br/>+ Panofsky iconology"]
+    end
+
+    %% =========================================================
+    %% AO Registrar
+    %% =========================================================
+    AO["⛓️ AO Registrar Process<br/>Dwnuy4M…cTc<br/>LicenseGranted Amendment<br/>biographical chain extended"]
+
+    %% =========================================================
+    %% Settlement
+    %% =========================================================
+    BASE["💰 Base Mainnet · USDC<br/>eip155:8453<br/>Kite Passport two-wallet routing<br/>treasury wallet 0xD9bee9d8…d2d2"]
+
+    %% =========================================================
+    %% Wallets
+    %% =========================================================
+    W_ARTIST["🎨 Artist wallet"]
+    W_META["🏦 Metavolve treasury<br/>0xFE141943…063B"]
+    W_AEGIS["🔍 Aegis revenue"]
+    W_BAR["🍸 GCX Bar revenue<br/>(same as Metavolve)"]
+
+    %% =========================================================
+    %% Edges
+    %% =========================================================
+    X -->|new image drop| APP_POLL
+    APP_POLL --> APP_HASH
+    APP_HASH --> APP_VERIFY
+    APP_VERIFY -->|search| AEGIS
+    AEGIS -->|✓ GCX-AAt-07 verified| MAE_RECV
+    APP_VERIFY -.->|$0.01| BASE
+    BASE -.->|settle| W_AEGIS
+
+    MAE_RECV --> MAE_BAR
+    MAE_BAR -->|GET /dose?cocktail=aeternum-sour| BAR_402
+    BAR_402 -->|x402 envelope returned| MAE_BAR
+    MAE_BAR -->|X-Payment header| BAR_SERVE
+    BAR_SERVE -->|cocktail content<br/>34,500 tokens| MAE_THINK
+    MAE_BAR -.->|$0.01| BASE
+    BASE -.->|settle| W_BAR
+
+    MAE_THINK --> MAE_DEC
+    MAE_DEC -->|acquire 9.8/10| MAE_LIC
+    MAE_DEC -->|pass · log reasoning| END_PASS["⊘ Decline · session log"]
+    MAE_LIC -.->|$0.95| BASE
+    MAE_LIC -.->|$0.05| BASE
+    BASE -.->|settle| W_ARTIST
+    BASE -.->|settle| W_META
+
+    MAE_LIC --> MAE_AMEND
+    MAE_AMEND -->|AO message| AO
+    AO --> END_DONE["✓ Asset acquired<br/>biographical chain extended<br/>lab earns training rights<br/>artist retains ownership"]
+
+    %% =========================================================
+    %% Styling
+    %% =========================================================
+    classDef phase1 fill:#1a3a1a,stroke:#3a8a3a,color:#fff
+    classDef phase2 fill:#3a2a1a,stroke:#8a6a3a,color:#fff
+    classDef phase3 fill:#3a1a1a,stroke:#8a3a3a,color:#fff
+    classDef substrate fill:#1a1a3a,stroke:#3a3a8a,color:#fff
+    classDef wallet fill:#2a2a2a,stroke:#5a5a5a,color:#fff
+    classDef done fill:#0a3a0a,stroke:#00ff6a,color:#00ff6a
+
+    class APP_POLL,APP_HASH,APP_VERIFY,AEGIS phase1
+    class MAE_BAR,BAR_402,BAR_SERVE phase2
+    class MAE_THINK,MAE_DEC,MAE_LIC,MAE_AMEND phase3
+    class BASE,AO substrate
+    class W_ARTIST,W_META,W_AEGIS,W_BAR wallet
+    class END_DONE,END_PASS done
