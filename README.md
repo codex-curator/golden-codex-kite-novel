@@ -240,6 +240,28 @@ Add to `.env` (see `.env.example`):
 
 If you have zero credentials, the `gcx-bar` service still works — it runs in **STUB MODE**, accepting any `X-Payment` header and returning the cocktail content. This lets you see the full payment-required → served-content cycle without setting up Kite Passport. The agents need real X + Claude keys to do their work; for the autonomous end-to-end demo, see the live URL at `golden-codex.com/kite-live`.
 
+### Smoke test (cold)
+
+Verify the local stack with the provided script:
+
+```bash
+./scripts/smoke-test.sh
+```
+
+Checks: gcx-bar health · menu populated · Aeternum Sour present · /dose returns 402 unauthenticated · /dose returns 200 with stub X-Payment · Maestra persona named in served content · apprentice/maestra reachability. Exits 0 on pass, 1 on any failure.
+
+### Live status page
+
+Open `docs/kite-live.html` in any browser — single-file, no build, no deps. Renders the 3-phase demo arc with the live ledger linking to Base mainnet anchor txs. Drops into Firebase Hosting unchanged for the public URL.
+
+### Visual architecture
+
+The diagram is `docs/architecture.mmd` (Mermaid format). Render to PNG via:
+
+```bash
+npx -p @mermaid-js/mermaid-cli mmdc -i docs/architecture.mmd -o docs/architecture.png -t dark -b transparent
+```
+
 ---
 
 ## Directory layout
@@ -272,8 +294,17 @@ golden-codex-kite-novel/
 │           ├── aeternum-sour.md  ← 34,500-token NEST 111-field bundle (demo hero)
 │           └── old-fashioned.md  ← 40K-token adversarial-critique bundle
 │
-└── docs/
-    └── demo-storyboard.md        ← 90-second video script + frame map
+├── docs/
+│   ├── demo-storyboard.md        ← 90-second video script + frame map
+│   ├── deck-outline.md           ← 12-slide pitch deck outline
+│   ├── kite-live.html            ← self-contained live status page (deploy to Firebase Hosting)
+│   ├── architecture.mmd          ← Mermaid system diagram
+│   ├── DEPLOY.md                 ← Cloud Run + Firebase deployment runbook
+│   ├── discord-teaser.md         ← pre-submission Discord teaser script
+│   └── submission-twitter-blast.md  ← Mon AM Twitter thread
+│
+└── scripts/
+    └── smoke-test.sh             ← end-to-end local stack verification
 ```
 
 ---
