@@ -162,5 +162,5 @@ Cloud Run + Firebase Hosting at expected demo traffic (~50 page views, ~10 demo 
 - [ ] `kpass wallet balance` shows ≥ $5 USDC for dry-run cycles
 - [ ] ANTHROPIC_API_KEY confirmed valid
 - [ ] X_BEARER_TOKEN confirmed valid (test with curl)
-- [ ] X_USER_IDs for @artiswagallery / @0x_b1ank / @vigor on hand
+- [ ] X_USER_IDs for @artiswagallery / @0x_b1ank / @Golden_Codex on hand
 - [ ] Repo pushed (`git push origin main`)

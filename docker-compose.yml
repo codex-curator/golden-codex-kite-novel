@@ -38,8 +38,8 @@ services:
       GCX_BAR_PAY_TO: "${GCX_BAR_PAY_TO:-0xFE141943a93c184606F3060103D975662327063B}"
       GCX_BAR_NETWORK: "${GCX_BAR_NETWORK:-eip155:8453}"
       GCX_BAR_ASSET: "${GCX_BAR_ASSET:-0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913}"
-      # STUB MODE if facilitator URL is empty — accepts any X-Payment header.
-      # For production, point at https://facilitator.pieverse.io or Kite-native facilitator.
+      # STUB MODE if facilitator URL is empty — accepts any X-Payment header (cold-start friendly).
+      # Production: Coinbase CDP facilitator for Base mainnet. Testnet fallback: https://facilitator.pieverse.io.
       GCX_BAR_FACILITATOR_URL: "${GCX_BAR_FACILITATOR_URL:-}"
       GCX_BAR_BASE_URL: "${GCX_BAR_BASE_URL:-http://localhost:8080}"
     restart: unless-stopped

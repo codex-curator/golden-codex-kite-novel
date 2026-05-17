@@ -8,8 +8,8 @@ IMAGE="gcr.io/${PROJECT_ID}/${SERVICE_NAME}:latest"
 SA_NAME="apprentice-operator-sa"
 SA_EMAIL="${SA_NAME}@${PROJECT_ID}.iam.gserviceaccount.com"
 
-echo "=== Apprentice Operator — Autonomous AI Training Data Buyer ==="
-echo "Cloud Run + Claude Sonnet + Aegis + x402 Kite + Firestore memory"
+echo "=== Apprentice Operator — Tactical Execution Agent under Maestra's mandate ==="
+echo "Cloud Run + X API polling + Aegis pHash verification + Firestore memory"
 echo ""
 
 # --- Service Account (least privilege) ---
@@ -56,7 +56,7 @@ gcloud run deploy "${SERVICE_NAME}" \
   --min-instances=0 \
   --max-instances=1 \
   --timeout=120 \
-  --set-env-vars="GCP_PROJECT=${PROJECT_ID},FIRESTORE_DB=golden-codex-database,AEGIS_URL=https://aegis-agent-172867820131.us-west1.run.app,X402_NETWORK=${X402_NETWORK:-kite},METAVOLVE_WALLET=0xFE141943a93c184606F3060103D975662327063B,ARTISWA_USER_ID=2019690975011172361,B1ANK_USER_ID=2019692766843006981,GOLDEN_CODEX_USER_ID=1995768015900807168" \
+  --set-env-vars="GCP_PROJECT=${PROJECT_ID},FIRESTORE_DB=golden-codex-database,AEGIS_URL=https://aegis-agent-172867820131.us-west1.run.app,X402_NETWORK=${X402_NETWORK:-base},METAVOLVE_WALLET=0xFE141943a93c184606F3060103D975662327063B,ARTISWA_USER_ID=2019690975011172361,B1ANK_USER_ID=2019692766843006981,GOLDEN_CODEX_USER_ID=1995768015900807168" \
   --set-secrets="ANTHROPIC_API_KEY=ANTHROPIC_API_KEY:latest,X_BEARER_TOKEN=x-bearer-token:latest" \
   --no-allow-unauthenticated
 
@@ -88,7 +88,7 @@ echo "Schedule: Every 2 minutes"
 echo "Auth: Service account OIDC (no public access)"
 echo ""
 echo "=== Apprentice Operator deployed ==="
-echo "It will begin monitoring X and licensing autonomously."
+echo "It will begin monitoring X feeds and dispatching verified candidates to Maestra."
 echo "Monitor: ${SERVICE_URL}/session"
 echo "Decisions: ${SERVICE_URL}/decisions"
-echo "Daily budget: \$10.00 (resets at midnight UTC)"
+echo "Role: Tactical discovery + Aegis verification (settlement happens at Maestra)"

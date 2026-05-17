@@ -76,7 +76,7 @@ REGISTER_API_URL = os.environ.get(
 
 # Anthropic API
 ANTHROPIC_API_KEY = os.environ.get("ANTHROPIC_API_KEY", "")
-CLAUDE_MODEL = os.environ.get("CLAUDE_MODEL", "claude-4-sonnet-20250514")
+CLAUDE_MODEL = os.environ.get("CLAUDE_MODEL", "claude-opus-4-7")
 
 # X API (bearer token for read-only monitoring)
 X_BEARER_TOKEN = os.environ.get("X_BEARER_TOKEN", "")
@@ -95,16 +95,15 @@ OPERATOR_VAULT = os.environ.get("OPERATOR_VAULT", "")
 # Metavolve revenue wallet
 METAVOLVE_WALLET = os.environ.get("METAVOLVE_WALLET", "0xFE141943a93c184606F3060103D975662327063B")
 
-# Fee structure — same rates as CIL, different criteria not different price
+# Fee structure — Maestra demo pricing (overrides via DEMO_LICENSE_TOTAL env)
 VERIFICATION_FEE = 0.001    # $0.001 → Metavolve (always charged)
-LICENSE_TOTAL = 0.01         # $0.01 total license cost
+LICENSE_TOTAL = float(os.environ.get("DEMO_LICENSE_TOTAL", "1.00"))  # $1.00 demo license
 TRANSACTION_FEE_PCT = 0.05  # 5% transaction fee → Metavolve
-ARTIST_SHARE = LICENSE_TOTAL * (1 - TRANSACTION_FEE_PCT)  # $0.0095 → Artist
-PLATFORM_FEE = LICENSE_TOTAL * TRANSACTION_FEE_PCT          # $0.0005 → Metavolve
+ARTIST_SHARE = LICENSE_TOTAL * (1 - TRANSACTION_FEE_PCT)  # $0.95 → Artist
+PLATFORM_FEE = LICENSE_TOTAL * TRANSACTION_FEE_PCT          # $0.05 → Metavolve
 
-# Call-the-collector behavior
-# Score threshold (0-10 scale) for Maestro to flag "exceptional — call collector"
-# when budget is insufficient. Below this, Maestro passes silently.
+# Legacy call-the-collector branch — inert when MAESTRA_AUTONOMOUS_MODE=true (the default).
+# Score threshold (0-10) to flag "exceptional — call collector" if budget is insufficient.
 EXCEPTIONAL_THRESHOLD = float(os.environ.get("EXCEPTIONAL_THRESHOLD", "9.0"))
 # Default suggested top-up in the notification (collector can override via approve endpoint)
 DEFAULT_TOPUP_USD = float(os.environ.get("DEFAULT_TOPUP_USD", "20.0"))
@@ -209,7 +208,7 @@ def save_session(session):
 
 
 def log_decision(decision_type, details, reasoning=""):
-    """Log decision with Maestro's reasoning — visible on dashboard."""
+    """Log decision with Maestra's reasoning — visible on dashboard."""
     db = get_db()
     db.collection("operator_maestro").document("decisions").collection("log").add({
         "operator_id": OPERATOR_ID,
@@ -583,7 +582,7 @@ Respond with EXACTLY this JSON (no code fences, no prose):
                     "reasoning": text,
                 }
     except Exception as e:
-        logger.error(f"Maestro evaluation failed: {e}")
+        logger.error(f"Maestra evaluation failed: {e}")
 
     return {"decision": "pass", "score": 0.0, "reasoning": "Evaluation unavailable"}
 
@@ -1015,7 +1014,7 @@ def process_drop(tweet_data, account_info, session):
     event["evaluation"] = evaluation
     event["artwork_id"] = verification.get("artwork_id")
     event["gcx_registered"] = verification.get("gcx_registered", False)
-    log_decision("maestro_evaluation", evaluation, reasoning=evaluation.get("reasoning", ""))
+    log_decision("maestra_evaluation", evaluation, reasoning=evaluation.get("reasoning", ""))
 
     decision = evaluation.get("decision", "pass")
     score = float(evaluation.get("score", 0) or 0)
@@ -1142,7 +1141,7 @@ def process_drop(tweet_data, account_info, session):
         event["status"] = "passed"
         event["fee_breakdown"] = {
             "verification_fee_metavolve": VERIFICATION_FEE,
-            "note": "Maestro passed — verification fee still earned by Metavolve",
+            "note": "Maestra passed — verification fee still earned by Metavolve",
         }
         session["total_passed"] = session.get("total_passed", 0) + 1
         session["budget_spent_today_usd"] = session.get("budget_spent_today_usd", 0) + VERIFICATION_FEE
@@ -1274,7 +1273,7 @@ def trigger_poll():
 
 @app.route("/collection", methods=["GET"])
 def get_collection():
-    """Get Maestro's current collection state."""
+    """Get Maestra's current collection state."""
     session = load_session()
     total_decisions = (
         session.get("total_acquired", 0)

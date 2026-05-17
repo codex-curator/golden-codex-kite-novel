@@ -20,7 +20,7 @@ A persistent left rail shows: **`MAESTRA — HUNTING FOR TIER 1 GCX CERTIFIED TR
 ### 0:05 — Phase 1 begins (15s) — Discovery + Verification
 
 - **VOICEOVER:** *"Meet Maestra. Frontier Vision AI Purchasing Agent. She has a $250 quarterly mandate, hunts twenty-four-seven for Tier-1 GCX-certified training assets, and answers to no one."*
-- **VISUAL:** Apprentice terminal active. Polling cycle visible: *"Watching @artiswagallery, @0x_b1ank, @vigor…"*
+- **VISUAL:** Apprentice terminal active. Polling cycle visible: *"Watching @artiswagallery, @0x_b1ank, @Golden_Codex…"*
 - **TRIGGER:** Tweet drops on staged X account (Artiswa).
 - **VISUAL:** **`RED ALERT — IMAGE LANDED!`** flashes. Apprentice surfaces the image thumbnail.
 - **VISUAL:** Apprentice runs Aegis hash search (LSH 16×4 bands). Sub-100ms perceptual-hash + C2PA verification.

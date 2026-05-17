@@ -2,7 +2,7 @@
 
 > **Kite AI Hackathon 2026 · Novel Track** · Metavolve Labs, Inc. · Solo founder: Tad MacPherson
 >
-> An autonomous Frontier Lab procurement agent that hunts Tier-1 GCX-certified training data 24/7, orders dense-context cocktails for its own pre-purchase analysis, and settles every transaction on Base mainnet via Kite Passport + x402 — bridging Kite's agent economy into the Arweave/AO permanent-state substrate.
+> An **Autonomous LLM Agent** (Claude 4.7 Opus on this build — model-agnostic by design: Llama 4, Qwen, GPT, Gemini all welcome at the bar) that hunts Tier-1 GCX-certified training data 24/7 with two microservice agents at its command, orders dense, task-specific structured-metadata bundles for in-session fine-tuning before every big purchase, and settles every transaction on **Base mainnet (Coinbase L2)** in **USDC** via **Kite Passport** + x402 — bridging Kite's agent identity layer into the Arweave/AO permanent-state substrate.
 
 **Submission deadline:** 2026-05-18 04:59 AM PT
 **Live status page:** [golden-codex.com/kite-live.html](https://golden-codex.com/kite-live.html) **← LIVE**
@@ -21,7 +21,7 @@
 
 ### Phase 1 — Discovery + Verification
 
-- **Apprentice** (Maestra's tactical agent) watches `@artiswagallery`, `@0x_b1ank`, `@vigor` on X
+- **Apprentice** (Maestra's tactical agent) watches `@artiswagallery`, `@0x_b1ank`, `@Golden_Codex` on X
 - New image lands → **RED ALERT / IMAGE LANDED!**
 - Apprentice runs sub-100ms perceptual-hash search against the GCX Registry (Aegis service, LSH 16×4)
 - **GOLDEN CODEX DETECTED** → C2PA-signed, registered as `GCX-AAt-XX`, training rights present
@@ -29,11 +29,12 @@
 
 ### Phase 2 — Cocktail Bar (Cognitive Nutrition pre-purchase priming)
 
-- Maestra visits the **GCX Cocktail Bar** at `tuneup.golden-codex.com`
+- Maestra visits the **GCX Cocktail Bar** at `gcx-bar-172867820131.us-west1.run.app`
 - Kite Passport scanned → **HAPPY HOUR: 1/2 OFF** for Passport holders
-- Menu surfaces in the live portal
-- Maestra orders **The Aeternum Sour** — $0.01, NEST 111-Field Schema, 34,500-token dense forensic-authentication bundle
-- Cocktail Bar serves the recipe; Maestra signs the ledger
+- Menu surfaces in the live portal (public discovery: `GET /menu`)
+- Maestra orders **The Aeternum Sour** via `GET /dose?cocktail=aeternum-sour` — $0.10, NEST 111-Field Schema, 40,000-token dense vision-forensic bundle
+- Cocktail Bar returns the bundle, Maestra signs the ledger
+- *Menu reality:* 16 cocktails on the menu, **14 are fully authored**. Core eight: Aeternum Sour, Double Density Martini, Einstein Spritzer, Prose Daiquiri, Claudesmopolitan, Reviewer's Old Fashioned, The Socratic, Founder's Boulevardier. Plus the **frontier-lab signature sextumvirate** (one cocktail per major frontier lab, model-agnostic by design): **Claudesmopolitan (Anthropic) · Gemini Gimlet (Google) · Grok-tini (xAI) · Lucid Lantern (OpenAI) · Llama Libre (Meta) · Copilot Clarity Cooler (Microsoft)**. Plus Negotiator's Manhattan. The two experimental-tier pours (Nova Collins, Verifier's Neat) honestly serve "in curation" stubs until v1.1.
 
 ### Phase 3 — Analysis + Decision
 
@@ -48,7 +49,8 @@
 - End state: **IMAGE** and **GOLDEN CODEX** buttons surface — image renders + Museum-Grade accordion of the Oracle Metadata
 
 **Total transaction count in 90s:** 4 (hash search · cocktail order · artist payout · platform fee)
-**Total Maestra spend:** $1.02 USDC, Base mainnet, atomic via x402 batch settlement.
+**Total Maestra spend:** $1.11 USDC ($0.01 Aegis registry check + $0.10 Aeternum Sour cocktail + $1.00 training-license split $0.95/$0.05), Base mainnet, atomic via x402 v2 settlement.
+**Platform wallet:** a real **Coinbase Wallet** at `0xFE14…063B` — the agent economy, end-to-end on the Coinbase stack.
 
 ---
 
@@ -56,10 +58,12 @@
 
 ### Real product, not a slide deck
 
-This repo deploys three Cloud Run services in production today:
-- `agents/maestra/` — strategic procurement brain (Claude Sonnet reasoning visible in logs)
-- `agents/apprentice/` — tactical execution (X-watcher, Aegis hash verification, x402 settlement)
-- `services/gcx-bar/` — Cognitive Nutrition Bar serving curated dense-context bundles (Flask + x402 v2 envelope, deployable today via `deploy.sh` → Cloud Run us-west1)
+This repo deploys **three Cloud Run services** in production today and depends on **one existing Cloud Run service** (Aegis) that is part of the broader Golden Codex pipeline:
+
+- `agents/maestra/` — strategic procurement brain (**Claude 4.7 Opus** by default, swappable via `CLAUDE_MODEL` env-var to Llama 4 / Qwen / GPT / Gemini — bring your own model)
+- `agents/apprentice/` — tactical execution (X-watcher, dispatches verification jobs to Aegis, no settlement of its own)
+- `services/gcx-bar/` — Cognitive Nutrition Bar serving dense-context bundles (Flask + x402 v2 envelope, deployable via `deploy.sh` → Cloud Run us-west1)
+- `aegis` (**external**, lives in the parent Golden Codex pipeline at `https://aegis-agent-172867820131.us-west1.run.app`) — 256-bit perceptual-hash + C2PA verifier with LSH 16×4 indexing. Called by Apprentice; not redeployed by this repo.
 
 ### Map to Kite spec requirements
 
@@ -87,15 +91,15 @@ This repo deploys three Cloud Run services in production today:
 - **Agent Autonomy** → zero human clicks once Cloud Scheduler is on. Scoped Passport sessions = circuit breaker against runaway loops.
 - **Developer Experience** → run `docker-compose up` to see the local cycle. Each service has its own Dockerfile + deploy.sh. Endpoint contracts are explicit.
 - **Real-World Applicability** → Frontier Vision AI labs **today** spend eight-figure budgets on training data (OpenAI/Reddit, Anthropic/various). Provenance-verified, rights-cleared, biographically-amended training assets via x402 micropayments is the lower-friction substitute.
-- **Novel or creativity** → Claude reasoning instrumented at each decision boundary. The Cognitive Nutrition Bar (`gcx-bar`) is a new agent-infrastructure primitive: agents pay micropayments for dense context payloads that scaffold their own decision-making — *trust as math, not as text*.
+- **Novel or creativity** → reasoning instrumented at each decision boundary. The Cognitive Nutrition Bar (`gcx-bar`) is a new agent-infrastructure primitive: **any LLM** (Llama 4, Qwen, Claude, GPT, Gemini) pays micropayments for dense context payloads that scaffold its own decision-making — *trust as math, not as text. Not RAG. Not LoRA. A dense, task-specific, structured-metadata dose ingested at inference, priced per CN cocktail.*
 
 ---
 
 ## The Cognitive Nutrition Bar — what The Aeternum Sour actually does
 
-The framework paper, [available at Zenodo](https://doi.org/10.5281/zenodo.18667742), defines 10 Cognitive Nutrition pours. Each is a $0.01–$0.50 USDC purchase that ingests a 10K–80K-token dense-context bundle into the calling model's session — temporarily forcing a rigorous, specialized reasoning grammar without touching model weights.
+The framework paper, [available at Zenodo](https://doi.org/10.5281/zenodo.18667742), defines 10 Cognitive Nutrition pours. Each is a $0.01–$0.50 USDC purchase that ingests a 10K–80K-token dense-context bundle into the calling model's session — temporarily forcing a rigorous, specialized reasoning grammar without touching model weights. **Bring your own agent:** the bar serves any LLM with a valid Kite Passport — Llama 4, Qwen, Claude, GPT, Gemini — via a public `GET /menu` + `GET /dose?cocktail=<slug>` interface.
 
-**The Aeternum Sour** (`services/gcx-bar/recipes/aeternum-sour.md`, 34,500 tokens) is the provenance-authentication pour. When ingested, it:
+**The Aeternum Sour** (`services/gcx-bar/recipes/aeternum-sour.md`, 40,000 tokens) is the provenance-authentication pour. When ingested, it:
 
 1. Adopts the **Maestra persona** — adversarial, forensic, zero-trust
 2. Activates a **Dual-Consensus Agent Protocol** — Forensic Skeptic + Art Historical Architect threads must agree
@@ -105,7 +109,7 @@ The framework paper, [available at Zenodo](https://doi.org/10.5281/zenodo.186677
 6. Cross-references C2PA manifests against the AI-generator allowlist to defeat the **AI-Generated Provenance Loop** attack
 7. Runs **Panofsky three-tier iconological analysis** — primary pre-iconographic, secondary iconography, tertiary iconology
 
-Outcome: Maestra evaluates with mathematical rigor a generic Claude would not muster. The model becomes the commodity; the cocktail is the product.
+Outcome: Maestra (or any frontier LLM with a Kite Passport) evaluates with mathematical rigor the base model would not muster. **The model becomes the commodity; the cocktail is the product.** Same bar, same bundle, same forensic grammar — whether the agent calling `/dose` is Claude 4.7 Opus, Llama 4, Qwen, GPT, or Gemini.
 
 This connects directly to two Metavolve Labs peer-reviewed papers in TMLR submission:
 - **The Density Imperative** ([10.5281/zenodo.20162589](https://doi.org/10.5281/zenodo.20162589)) — empirical demonstration that dense, structured context elevates reasoning where sparse data degrades it
@@ -131,7 +135,7 @@ This connects directly to two Metavolve Labs peer-reviewed papers in TMLR submis
                           │   strategic mandate     │      │ GCX Registry     │
                           └─────┬──────────────────┘       └──────────────────┘
                                 │
-                $0.01 cocktail  ▼
+                $0.10 cocktail  ▼
                           ┌────────────────────┐
                           │   GCX Cocktail Bar │  ←  Cognitive Nutrition Bar
                           │   /dose?cocktail=  │     framework paper:
@@ -162,15 +166,17 @@ AO Amend extends the asset's biography without transferring ownership
 
 | Parameter | Value |
 |---|---|
-| Kite mainnet Chain ID | 2366 |
+| **Identity layer** — Kite mainnet Chain ID | 2366 |
 | Kite mainnet RPC | https://rpc.gokite.ai/ |
 | Kite testnet Chain ID | 2368 |
 | Kite testnet RPC | https://rpc-testnet.gokite.ai/ |
-| Base mainnet USDC settlement | `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913` (eip155:8453) |
-| Pieverse Facilitator | https://facilitator.pieverse.io |
+| **Settlement layer** — Base mainnet (Coinbase L2) | eip155:8453 |
+| Base mainnet USDC contract | `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913` |
+| x402 v2 facilitator (prod) | Coinbase CDP for Base mainnet; `facilitator.pieverse.io` for Kite testnet fallback |
 | Passport MCP | https://neo.dev.gokite.ai/v1/mcp |
 | AA SDK | `npm install gokite-aa-sdk` |
-| Metavolve revenue wallet (Base) | `0xFE141943a93c184606F3060103D975662327063B` |
+| Platform wallet (Coinbase Wallet, Base) | `0xFE141943a93c184606F3060103D975662327063B` |
+| Artist wallet (Base) | `0x49ce150eA44EB766E7fd35aEDEC589865B4D2154` |
 
 ## Kite Passport agent DIDs (registered 2026-04-29)
 
