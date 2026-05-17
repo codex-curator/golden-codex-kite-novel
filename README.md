@@ -7,7 +7,7 @@
 **Submission deadline:** 2026-05-18 04:59 AM PT
 **Live status page:** [golden-codex.com/kite-live.html](https://golden-codex.com/kite-live.html) **← LIVE**
 **Live GCX Cocktail Bar:** [gcx-bar-172867820131.us-west1.run.app](https://gcx-bar-172867820131.us-west1.run.app/menu) **← LIVE on Cloud Run**
-**Anchor receipts (Base mainnet):** `0x09deffc1…7623` ($0.01 weather, 2026-04-29) · `0xa8c7f3fc…840886` (gcx-bar smoke test, 2026-04-29)
+**Anchor receipts:** `0x5cbb738b…abc616` (Aeternum Sour pour, 2026-05-17 21:22 UTC, **Kite chain 2366**, $0.01 — live on-chain settlement via Kite Passport ephemeral session key, EIP-712-signed) · `0x09deffc1…7623` (legacy Base mainnet smoke, 2026-04-29)
 **License:** MIT — agents and the Cognitive Nutrition Bar are open source.
 
 ![Maestra architecture — Apprentice + Maestra + GCX Cocktail Bar + Aegis + AO Registrar + Base mainnet](docs/architecture.png)
@@ -97,7 +97,7 @@ This repo deploys **three Cloud Run services** in production today and depends o
 
 ## The Cognitive Nutrition Bar — what The Aeternum Sour actually does
 
-The framework paper, [available at Zenodo](https://doi.org/10.5281/zenodo.18667742), defines 10 Cognitive Nutrition pours. Each is a $0.01–$0.50 USDC purchase that ingests a 10K–80K-token dense-context bundle into the calling model's session — temporarily forcing a rigorous, specialized reasoning grammar without touching model weights. **Bring your own agent:** the bar serves any LLM with a valid Kite Passport — Llama 4, Qwen, Claude, GPT, Gemini — via a public `GET /menu` + `GET /dose?cocktail=<slug>` interface.
+The framework paper, [available at Zenodo](https://doi.org/10.5281/zenodo.18667742), defines 10 Cognitive Nutrition pours — formally **Ephemeral Structured Elicitation (ESE)**. Each is a $0.10–$1.00 USDC purchase that ingests a 10K–80K-token dense-context bundle into the calling model's session — temporarily forcing a rigorous, specialized reasoning grammar without touching model weights. **Bring your own agent:** the bar serves any LLM with a valid Kite Passport — Llama 4, Qwen, Claude, GPT, Gemini — via a public `GET /menu` + `GET /dose?cocktail=<slug>` interface. Verified Kite Passport holders get **½-off Happy Hour** (EIP-712-signed envelope ecrecovered by the bar, no centralized allowlist).
 
 **The Aeternum Sour** (`services/gcx-bar/recipes/aeternum-sour.md`, 40,000 tokens) is the provenance-authentication pour. When ingested, it:
 
@@ -168,7 +168,7 @@ AO Amend extends the asset's biography without transferring ownership
 |---|---|
 | **Identity layer** — Kite mainnet Chain ID | 2366 |
 | Kite mainnet RPC | https://rpc.gokite.ai/ |
-| Kite testnet Chain ID | 2368 |
+| Kite chain ID | 2366 (live settlement landed here 2026-05-17) |
 | Kite testnet RPC | https://rpc-testnet.gokite.ai/ |
 | **Settlement layer** — Base mainnet (Coinbase L2) | eip155:8453 |
 | Base mainnet USDC contract | `0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913` |

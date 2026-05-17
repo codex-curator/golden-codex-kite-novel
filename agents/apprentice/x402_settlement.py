@@ -44,15 +44,15 @@ NETWORK_CONFIGS = {
         "network_id": "eip155:8453",
     },
     "kite": {
-        "chain_id": 2368,
-        "chain_label": "kite-testnet",
+        "chain_id": 2366,
+        "chain_label": "kite-chain",
         "rpc_url": "https://rpc-testnet.gokite.ai/",
         "explorer_url": "https://testnet.kitescan.ai",
-        "settlement_token": "0x0fF5393387ad2f9f691FD6Fd28e07E3969e27e63",  # Test USDT (18 decimals)
+        "settlement_token": "0x0fF5393387ad2f9f691FD6Fd28e07E3969e27e63",  # USDT (18 decimals)
         "facilitator_url": "https://facilitator.pieverse.io",
         "decimals": 18,
         "scheme": "exact",  # Pieverse v2 uses "exact" (gokite-aa is the AA SDK, not the x402 scheme)
-        "network_id": "eip155:2368",
+        "network_id": "eip155:2366",
     },
 }
 

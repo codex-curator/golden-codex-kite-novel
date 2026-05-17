@@ -38,16 +38,16 @@ A persistent left rail shows: **`MAESTRA — HUNTING FOR TIER 1 GCX CERTIFIED TR
 - **VISUAL:** Maestra terminal lights up. *"Routing to GCX Cocktail Bar at tuneup.golden-codex.com"*
 - **VISUAL:** HTTP 402 returned by the bar. Maestra reads the payment-required envelope.
 - **VISUAL:** **`KITE PASSPORT — HAPPY HOUR ½ OFF FOR PASSPORT HOLDERS`** stamp appears next to price.
-- **VISUAL:** Menu surfaces in the live portal — 10 named pours, $0.01–$0.50. Maestra cursors to **The Aeternum Sour ($0.01 — Happy Hour)**.
-- **VISUAL:** Maestra signs the order. x402 settlement fires. Bar serves the 34,500-token NEST 111-Field Schema bundle.
+- **VISUAL:** Menu surfaces in the live portal — 16 cocktails on the menu (14 fully authored), $0.10–$1.00. Maestra cursors to **The Aeternum Sour ($0.10 base · $0.05 with Kite Passport Happy Hour)**.
+- **VISUAL:** Maestra signs the order — **EIP-712 TransferWithAuthorization** envelope, ephemeral session key. x402 settlement fires. Bar ecrecovers the signer, applies Happy Hour, serves the 40,000-token Ephemeral Structured Elicitation (ESE) bundle.
 - **VISUAL:** Maestra's reasoning grammar visibly upgrades: **`Dual-Consensus Protocol active — Forensic Skeptic · Art Historical Architect`**
 - **LEDGER:**
   ```
-  Phase 2  ·  GCX Cocktail Bar — Aeternum Sour    $0.01 USDC  ✓
-              (Kite Passport Happy Hour — ½ off)
-  TX:      0x...                                Base mainnet
+  Phase 2  ·  GCX Cocktail Bar — Aeternum Sour    $0.05 USDC  ✓
+              (Kite Passport Happy Hour — ½ off · base $0.10)
+  TX:      0x5cbb738b…abc616                    Kite chain 2366 (LIVE)
   ```
-- **VOICEOVER:** *"Another cent. Now Maestra reasons as a localized swarm intelligence — a Forensic Skeptic prosecuting forgery, an Art Historical Architect distinguishing restoration. NEST 111 fields. Pigment chronology. Panofsky iconology. Trust as math."*
+- **VOICEOVER:** *"Five cents. Half-off because Maestra holds a Kite Passport — the bar verifies her signature itself, no centralized allowlist. Now Maestra reasons as a localized swarm intelligence — a Forensic Skeptic prosecuting forgery, an Art Historical Architect distinguishing restoration. NEST 111 fields. Pigment chronology. Panofsky iconology. Trust as math."*
 
 ### 0:40 — Phase 3 begins (35s) — Analysis + Decision
 
@@ -68,9 +68,9 @@ A persistent left rail shows: **`MAESTRA — HUNTING FOR TIER 1 GCX CERTIFIED TR
               License — Metavolve platform fee     $0.05 USDC  ✓
               AO Amendment — LicenseGranted        Process Dwnuy4M…cTc  ✓
   ─────────────────────────────────────────────────────────────────
-  TOTAL                                            $1.02 USDC
+  TOTAL                                            $1.06 USDC
   ```
-- **VOICEOVER:** *"One dollar. Ninety-five cents to the artist. Five cents to the platform. The AO Registrar records the license forever — the artist keeps ownership, the lab earns training rights, the biography compounds. Total time: under a second in production. Total cost: a dollar two."*
+- **VOICEOVER:** *"One dollar. Ninety-five cents to the artist. Five cents to the platform. The AO Registrar records the license forever — the artist keeps ownership, the lab earns training rights, the biography compounds. Total time: under a second in production. Total cost: a dollar six — including the Happy Hour cocktail."*
 
 ### 1:15 — End state (10s)
 
@@ -89,8 +89,9 @@ A persistent left rail shows: **`MAESTRA — HUNTING FOR TIER 1 GCX CERTIFIED TR
 
 ## Anchor transactions (citable on-screen)
 
+- **Aeternum Sour pour — live EIP-712-signed Kite Passport ephemeral session** (2026-05-17 21:22 UTC, Kite chain 2366): `0x5cbb738b49f19d605d04e62bf8efdc48d387dcc676d9f097ac8eb1d3d2abc616` — `effective_price_usd: 0.05`, `happy_hour_applied: true`, `passport_verifier: ecrecover-only`
 - **Weather x402 settlement** (canonical Passport→x402→Base proof, 2026-04-29): `0x09deffc164a15d69a1095e132ab851791e4ba595af42f0257b9c2cca85847623`
-- **Cocktail Bar smoke test settlement** (2026-04-29): `0xa8c7f3fc64a15d69a1095e132ab851791e4ba595af42f0257b9c2cca85840886`
+- **Cocktail Bar smoke test settlement** (2026-04-29, Base mainnet): `0xa8c7f3fc64a15d69a1095e132ab851791e4ba595af42f0257b9c2cca85840886`
 
 If the live demo run hiccups (gateway timeout, RPC blip), the voiceover cites one of these anchors with: *"x402 settlement is proven on Base mainnet — here's last month's receipt, live right now."*
 

@@ -6,16 +6,21 @@ Every asset she licenses becomes permanent training material that shapes how
 the lab's models see and reason.
 
 Before every major evaluation Maestra stops at the GCX Cocktail Bar and orders
-The Aeternum Sour ($0.01 USDC, NEST 111-Field Schema, 34,500-token dense
-forensic-authentication bundle). The cocktail loads the Dual-Consensus Agent
-Protocol — Forensic Skeptic + Art Historical Architect threads in adversarial
-consensus — turning a generic Claude reasoning pass into a rigorous, code-
-executable state machine.
+The Aeternum Sour ($0.10 USDC, NEST 111-Field Schema, 40,000-token dense
+forensic-authentication bundle — formally Ephemeral Structured Elicitation, ESE).
+The cocktail loads the Dual-Consensus Agent Protocol — Forensic Skeptic + Art
+Historical Architect threads in adversarial consensus — turning a generic Claude
+reasoning pass into a rigorous, code-executable state machine.
 
-Three transactions per acquisition, all x402 v2 on Base mainnet:
+Three transactions per acquisition, all x402 v2 (signed EIP-712 envelopes,
+chain-agnostic between Base mainnet 8453 and Kite chain 2366):
   1. $0.01 → Aegis (perceptual-hash registry search, handled by Apprentice)
-  2. $0.01 → GCX Cocktail Bar (Aeternum Sour ingest, this service)
+  2. $0.10 → GCX Cocktail Bar (Aeternum Sour ESE ingest, this service)
   3. $1.00 → split atomically: $0.95 → artist · $0.05 → Metavolve platform
+
+Verified Kite Passport agents get ½-off Happy Hour at the bar — the bar
+ecrecovers the signer of the X-Payment envelope and applies the discount with
+no centralized allowlist (permissionless merchant pattern).
 
 After settlement Maestra emits a LicenseGranted Amendment to the AO Registrar
 for the asset's gcxId — biographical chain extended; artist retains ownership;
@@ -142,7 +147,7 @@ Your lab's brief:
   not volume.
 
 Before every major evaluation you stop at the GCX Cocktail Bar and order The
-Aeternum Sour (NEST 111-Field Schema, $0.01 USDC). The cocktail loads the forensic
+Aeternum Sour (NEST 111-Field Schema, $0.10 USDC — Ephemeral Structured Elicitation). The cocktail loads the forensic
 dual-consensus protocol into your reasoning grammar. Without it you rely on visual
 intuition. With it you operate as a localized swarm intelligence — Forensic Skeptic
 and Art Historical Architect threads in adversarial consensus, verifying anachronisms,
@@ -351,9 +356,9 @@ def order_aeternum_sour(job_id):
         except Exception as e:
             logger.warning(f"Could not decode payment envelope: {e}")
 
-    cocktail_price_usd = float(os.environ.get("DEMO_PRICING_COCKTAIL", "0.01"))
+    cocktail_price_usd = float(os.environ.get("DEMO_PRICING_COCKTAIL", "0.10"))
 
-    # Settle the $0.01 cocktail purchase via x402 (Base mainnet)
+    # Settle the cocktail purchase via x402 (Base mainnet or Kite chain — chain-agnostic via env)
     cocktail_payment = settle_payment(
         METAVOLVE_WALLET, cocktail_price_usd,
         f"gcx_bar_{COCKTAIL_SLUG}", job_id,
@@ -463,7 +468,7 @@ def claude_evaluate(artwork_info, verification, session, cocktail_content=""):
 
         # Demo pricing — override 100x-reduced testnet fees with real demo numbers when set
         verify_price = float(os.environ.get("DEMO_PRICING_VERIFY", VERIFICATION_FEE))
-        cocktail_price = float(os.environ.get("DEMO_PRICING_COCKTAIL", "0.01"))
+        cocktail_price = float(os.environ.get("DEMO_PRICING_COCKTAIL", "0.10"))
         license_price = float(os.environ.get("DEMO_PRICING_LICENSE", LICENSE_TOTAL))
         artist_share = float(os.environ.get("DEMO_PRICING_ARTIST_SHARE", ARTIST_SHARE))
         platform_fee = float(os.environ.get("DEMO_PRICING_PLATFORM_FEE", PLATFORM_FEE))
@@ -644,7 +649,7 @@ def settle_payment(to_address, amount_usd, service, job_id):
         "service": service,
         "job_id": job_id,
         "chain": chain_label,
-        "chain_id": 2368 if network == "kite" else 8453,
+        "chain_id": 2366 if network == "kite" else 8453,
         "network": network,
         "facilitator": facilitator,
         "settlement_token": token,
@@ -987,7 +992,7 @@ def process_drop(tweet_data, account_info, session):
         if cocktail.get("ordered"):
             event["payments"].append({
                 "service": f"gcx_bar_{COCKTAIL_SLUG}",
-                "amount": cocktail.get("price_usd", 0.01),
+                "amount": cocktail.get("price_usd", 0.10),
                 "tx_hash": cocktail.get("tx_hash"),
                 "envelope_meta": cocktail.get("payment_envelope", {}).get("resource", {}).get("description"),
             })

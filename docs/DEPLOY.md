@@ -82,7 +82,7 @@ MAESTRA_MANDATE_TIER                tier-1-gcx-certified
 MAESTRA_MANDATE_DOMAIN              vision-training
 MAESTRA_AUTONOMOUS_MODE             true
 DEMO_PRICING_VERIFY                 0.01
-DEMO_PRICING_COCKTAIL               0.01
+DEMO_PRICING_COCKTAIL               0.10
 DEMO_PRICING_LICENSE                1.00
 DEMO_PRICING_ARTIST_SHARE           0.95
 DEMO_PRICING_PLATFORM_FEE           0.05

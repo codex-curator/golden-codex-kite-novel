@@ -38,10 +38,10 @@ Visual: Reddit / Stack Overflow / Met logos with dollar-sign overlay. "Hunting a
 
 Three transactions per acquisition:
 - **$0.01** → Aegis perceptual-hash registry search (Phase 1)
-- **$0.01** → GCX Cocktail Bar for cognitive-nutrition priming (Phase 2 — Kite Passport Happy Hour)
+- **$0.10** → GCX Cocktail Bar for cognitive-nutrition priming (Phase 2 — Kite Passport Happy Hour cuts this to $0.05)
 - **$1.00** → license, split $0.95 → artist · $0.05 → Metavolve (Phase 3)
 
-**Total acquisition cost: $1.02 USDC.** No human approvals. AO Registrar records the license forever.
+**Total acquisition cost: $1.11 USDC** ($1.06 with Passport Happy Hour). No human approvals. AO Registrar records the license forever.
 
 Visual: clean 3-phase arrow diagram with prices.
 
@@ -51,10 +51,11 @@ Visual: clean 3-phase arrow diagram with prices.
 
 **Headline:** This is not a slide. It is running.
 
-| Anchor | Tx hash | Date |
-|---|---|---|
-| Kite Passport → x402 → Base USDC proof | `0x09deffc1…7623` | 2026-04-29 |
-| GCX Cocktail Bar paid-call smoke test | `0xa8c7f3fc…840886` | 2026-04-29 |
+| Anchor | Tx hash | Date | Network |
+|---|---|---|---|
+| **Aeternum Sour pour — live EIP-712-signed Kite Passport ephemeral session** | `0x5cbb738b…abc616` | 2026-05-17 21:22 UTC | **Kite chain 2366** |
+| Kite Passport → x402 → Base USDC proof | `0x09deffc1…7623` | 2026-04-29 | Base mainnet 8453 |
+| GCX Cocktail Bar paid-call smoke test | `0xa8c7f3fc…840886` | 2026-04-29 | Base mainnet 8453 |
 
 **Live demo URL:** `golden-codex.com/kite-live` (deployed Cloud Run + Firebase Hosting)
 **Repo:** `github.com/codex-curator/golden-codex-kite-novel` (MIT, `docker-compose up` works cold)
@@ -99,16 +100,17 @@ Visual: BIP-32 derivation tree.
 
 ## Slide 7 — The GCX Cocktail Bar (novel agent infrastructure)
 
-**Cognitive Nutrition pours for autonomous agents.** Each cocktail is a $0.01–$0.50 dense-context bundle (10K–80K tokens) that scaffolds a calling model's reasoning grammar for one task session. No fine-tuning. No weight updates. No catastrophic forgetting.
+**Cognitive Nutrition pours for autonomous agents — formally Ephemeral Structured Elicitation (ESE).** Each cocktail is a $0.10–$1.00 dense-context bundle (10K–80K tokens) that scaffolds a calling model's reasoning grammar for one task session. No fine-tuning. No weight updates. No catastrophic forgetting. **Verified Kite Passport holders get ½-off Happy Hour** — the bar ecrecovers the signer of the EIP-712-signed envelope, no centralized allowlist.
 
 | Cocktail | Price | Mechanism | Domain |
 |---|---|---|---|
-| **The Aeternum Sour** ★ | $0.01 | NEST 111-Field Schema · Dual-Consensus Forensic | Provenance auth (demo hero) |
+| **The Aeternum Sour** ★ | $0.10 | NEST 111-Field Schema · Dual-Consensus Forensic | Provenance auth (demo hero) |
 | Einstein Spritzer | $0.10 | Taxonomic Criteria Evaluation | Academic / theorem proving |
 | Claudesmopolitan | $0.25 | Co-Dialectic Loop Architecture | Code orchestration |
 | Founder's Boulevardier | $0.25 | Rhetorical Structure Theory | Investor pitch |
 | Double Density Martini | $0.50 | Universal Synthesis Protocol | Unbounded research |
-| *(5 more on the menu)* | | | |
+| Copilot Clarity Cooler | $0.50 | Clarity Cascade Protocol | Pair-programming priming |
+| *(10 more — frontier-lab sextumvirate sealed)* | | | |
 
 **Framework paper:** Zenodo [10.5281/zenodo.18667742](https://doi.org/10.5281/zenodo.18667742) · 44 citations · recursive validation of CN methodology.
 
@@ -164,7 +166,7 @@ Visual: three checkmarks with arrows pointing to specific code paths.
 **Immediate (next 30 days):**
 - Push live demo to `golden-codex.com/kite-live` (Cloud Run + Firebase Hosting)
 - Register the GCX Cocktail Bar on the Kite Agent Marketplace (Stephen A handshake)
-- Open Aeternum Sour to public x402 traffic — first 1000 pours at $0.01 each
+- Open Aeternum Sour to public x402 traffic — first 1000 pours at $0.10 each
 
 **90 days — Protocol commitment:**
 - **A2A × x402 Permaweb Extension SDK** — middleware so any Kite-attested agent can post AO Amendments without holding AR

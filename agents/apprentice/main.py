@@ -422,7 +422,7 @@ def settle_payment(to_address, amount_usd, service, job_id):
         )
     # Fallback if shared module not available
     network = os.environ.get("X402_NETWORK", "base")
-    chain_label = "kite-testnet" if network == "kite" else "base-mainnet"
+    chain_label = "kite-chain" if network == "kite" else "base-mainnet"
     facilitator = "https://facilitator.pieverse.io" if network == "kite" else "https://x402.org/facilitator"
     token = "0x0fF5393387ad2f9f691FD6Fd28e07E3969e27e63" if network == "kite" else "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913"
     return {
@@ -432,7 +432,7 @@ def settle_payment(to_address, amount_usd, service, job_id):
         "service": service,
         "job_id": job_id,
         "chain": chain_label,
-        "chain_id": 2368 if network == "kite" else 8453,
+        "chain_id": 2366 if network == "kite" else 8453,
         "network": network,
         "facilitator": facilitator,
         "settlement_token": token,
