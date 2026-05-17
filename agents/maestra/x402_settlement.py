@@ -82,13 +82,18 @@ NETWORK_CONFIGS = {
     },
     "kite": {
         "chain_id": 2366,
-        "chain_label": "kite-chain",
-        "rpc_url": "https://rpc-testnet.gokite.ai/",
-        "explorer_url": "https://testnet.kitescan.ai",
-        "settlement_token": "0x0fF5393387ad2f9f691FD6Fd28e07E3969e27e63",  # USDT (18 decimals)
+        "chain_label": "kite-mainnet",
+        "rpc_url": "https://rpc.gokite.ai/",
+        "explorer_url": "https://kitescan.ai",
+        # Kite-mainnet USDC contract (set via X402_SETTLEMENT_TOKEN env var when funded).
+        # Default below is the testnet placeholder retained for backward-compat with
+        # earlier scaffold; the live demo settles on Base 8453 USDC via Kite Passport
+        # routing, so this Kite-mainnet entry is only exercised when X402_NETWORK=kite
+        # is explicitly set.
+        "settlement_token": os.environ.get("KITE_MAINNET_USDC", "0x0fF5393387ad2f9f691FD6Fd28e07E3969e27e63"),
         "facilitator_url": "https://facilitator.pieverse.io",
-        "decimals": 18,
-        "scheme": "exact",  # Pieverse v2 uses "exact" (gokite-aa is the AA SDK, not the x402 scheme)
+        "decimals": 6,
+        "scheme": "exact",
         "network_id": "eip155:2366",
     },
 }
