@@ -13,6 +13,7 @@ logs a warning) so the scaffold is testable without a facilitator wired.
 from __future__ import annotations
 
 import base64
+import binascii
 import json
 import logging
 import os
@@ -27,9 +28,7 @@ def build_payment_required_envelope(
     *,
     url: str,
     description: str,
-    network: str,
-    asset: str,
-    amount_atomic: str,
+    accepted_payments: list[dict[str, Any]],
     pay_to: str,
     category: str,
     tags: list[str],
@@ -37,6 +36,25 @@ def build_payment_required_envelope(
     example_output: dict[str, Any],
     max_timeout_seconds: int = 300,
 ) -> str:
+    """
+    Build an x402 v2 envelope advertising one or more chains the merchant accepts.
+
+    `accepted_payments` is a list of dicts, each with keys `network`, `asset`, `amount`.
+    The bar advertises Base (USDC, 6 decimals) and Kite chain (Kite USDT, 18 decimals)
+    so an agent can settle on whichever wallet has funds — permissionless cross-chain.
+    """
+    accepts = [
+        {
+            "scheme": "exact",
+            "network": p["network"],
+            "asset": p["asset"],
+            "amount": p["amount"],
+            "payTo": pay_to,
+            "maxTimeoutSeconds": max_timeout_seconds,
+            "extra": p.get("extra", {"name": "USD Coin", "version": "2"}),
+        }
+        for p in accepted_payments
+    ]
     envelope = {
         "x402Version": 2,
         "error": "Payment required",
@@ -45,17 +63,7 @@ def build_payment_required_envelope(
             "description": description,
             "mimeType": "application/json",
         },
-        "accepts": [
-            {
-                "scheme": "exact",
-                "network": network,
-                "asset": asset,
-                "amount": amount_atomic,
-                "payTo": pay_to,
-                "maxTimeoutSeconds": max_timeout_seconds,
-                "extra": {"name": "USD Coin", "version": "2"},
-            }
-        ],
+        "accepts": accepts,
         "extensions": {
             "bazaar": {
                 "discoverable": True,
@@ -80,12 +88,20 @@ def build_payment_required_envelope(
 def verify_payment_header(
     *,
     payment_header: str,
-    expected_amount: str,
+    accepted_payments: list[dict[str, Any]],
     expected_pay_to: str,
-    expected_asset: str,
-    expected_network: str,
     facilitator_url: str = "",
 ) -> bool:
+    """
+    Validate the X-Payment header against the merchant's accepted-payment matrix.
+
+    In stub mode (no facilitator), any header that decodes as base64 JSON and
+    targets one of the accepted networks passes. The bar's pricing decision
+    (Happy Hour ½-off) is governed by `kite_passport_verify`, not this gate.
+
+    In facilitator mode, the matched accepted_payment entry's amount/asset/network
+    is forwarded as the paymentRequirements to /v2/settle.
+    """
     if not facilitator_url:
         logger.warning(
             "GCX_BAR_FACILITATOR_URL unset — running in STUB MODE. "
@@ -94,16 +110,39 @@ def verify_payment_header(
         return True
 
     try:
+        decoded = json.loads(base64.b64decode(payment_header))
+    except (ValueError, binascii.Error) as e:
+        logger.error(f"invalid X-Payment header: {e}")
+        return False
+
+    payment_payload = decoded.get("paymentPayload", decoded)
+    payload_network = decoded.get("network") or payment_payload.get("network", "")
+
+    # Pick the accepted_payment that matches the network the agent is settling on.
+    matched = next(
+        (p for p in accepted_payments if p["network"] == payload_network),
+        None,
+    )
+    if not matched:
+        logger.error(
+            f"settlement network '{payload_network}' not in accepted set "
+            f"{[p['network'] for p in accepted_payments]}"
+        )
+        return False
+
+    try:
         resp = requests.post(
             f"{facilitator_url.rstrip('/')}/v2/settle",
             json={
                 "x402Version": 2,
-                "payment": payment_header,
-                "expected": {
-                    "amount": expected_amount,
+                "paymentPayload": payment_payload,
+                "paymentRequirements": {
+                    "scheme": "exact",
+                    "network": matched["network"],
+                    "asset": matched["asset"],
+                    "amount": matched["amount"],
                     "payTo": expected_pay_to,
-                    "asset": expected_asset,
-                    "network": expected_network,
+                    "maxTimeoutSeconds": 300,
                 },
             },
             timeout=15,

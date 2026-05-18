@@ -85,12 +85,9 @@ NETWORK_CONFIGS = {
         "chain_label": "kite-mainnet",
         "rpc_url": "https://rpc.gokite.ai/",
         "explorer_url": "https://kitescan.ai",
-        # Kite-mainnet USDC contract (set via X402_SETTLEMENT_TOKEN env var when funded).
-        # Default below is the testnet placeholder retained for backward-compat with
-        # earlier scaffold; the live demo settles on Base 8453 USDC via Kite Passport
-        # routing, so this Kite-mainnet entry is only exercised when X402_NETWORK=kite
-        # is explicitly set.
-        "settlement_token": os.environ.get("KITE_MAINNET_USDC", "0x0fF5393387ad2f9f691FD6Fd28e07E3969e27e63"),
+        # Bridged USDC (Kite AI) — symbol USDC.e — verified on-chain via
+        # kitescan.ai for the 2026-05-17 anchor tx 0x5cbb738b…abc616.
+        "settlement_token": os.environ.get("KITE_USDC", "0x7aB6f3ed87C42eF0aDb67Ed95090f8bF5240149e"),
         "facilitator_url": "https://facilitator.pieverse.io",
         "decimals": 6,
         "scheme": "exact",

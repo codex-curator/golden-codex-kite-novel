@@ -2,12 +2,12 @@
 
 > **Kite AI Hackathon 2026 · Novel Track** · Metavolve Labs, Inc. · Solo founder: Tad MacPherson
 >
-> An **Autonomous LLM Agent** (Claude 4.7 Opus on this build — model-agnostic by design: Llama 4, Qwen, GPT, Gemini all welcome at the bar) that hunts Tier-1 GCX-certified training data 24/7 with two microservice agents at its command, orders dense, task-specific structured-metadata bundles for in-session fine-tuning before every big purchase, and settles every transaction on **Base mainnet (Coinbase L2)** in **USDC** via **Kite Passport** + x402 — bridging Kite's agent identity layer into the Arweave/AO permanent-state substrate.
+> An **Autonomous LLM Agent** (Claude 4.7 Opus on this build — model-agnostic by design: Llama 4, Qwen, GPT, Gemini all welcome at the bar) that hunts Tier-1 GCX-certified training data 24/7 with two microservice agents at its command, orders dense, task-specific structured-metadata bundles for in-session fine-tuning before every big purchase, and settles every transaction in **USDC** via **Kite Passport** + x402. The bar advertises both **Kite mainnet 2366 (USDC.e)** and **Base mainnet 8453 (USDC)** in its `accepts` envelope — Kite Passport's two-wallet routing picks whichever chain the agent's session is funded on. Real money, either way.
 
 **Submission deadline:** 2026-05-18 04:59 AM PT
 **Live status page:** [golden-codex.com/kite-live.html](https://golden-codex.com/kite-live.html) **← LIVE**
 **Live GCX Cocktail Bar:** [gcx-bar-172867820131.us-west1.run.app](https://gcx-bar-172867820131.us-west1.run.app/menu) **← LIVE on Cloud Run**
-**Anchor receipts:** `0x5cbb738b…abc616` (Aeternum Sour pour, 2026-05-17 21:22 UTC, **Kite chain 2366**, $0.01 — live on-chain settlement via Kite Passport ephemeral session key, EIP-712-signed) · `0x09deffc1…7623` (legacy Base mainnet smoke, 2026-04-29)
+**Anchor receipts:** 8 autonomous settlements on **Kite mainnet 2366** (2026-05-18 03:58–04:00 UTC), **$3.09 USDC.e total** — 4 × $0.01 Aegis registry checks · 1 × $0.05 Aeternum Sour cocktail (Happy Hour ½-off applied) · 3 × $1.00 training-license transfers. Cocktail anchor `0x5367cb33…b8c4`. Treasury `0xFE141943…063B`. Each settlement signed by an ephemeral Kite Passport session key (EIP-712 TransferWithAuthorization) — verify any of them at [kitescan.ai](https://kitescan.ai). Legacy Base-mainnet smoke (2026-04-29): `0x09deffc1…7623`.
 **License:** MIT — agents and the Cognitive Nutrition Bar are open source.
 
 ![Maestra architecture — Apprentice + Maestra + GCX Cocktail Bar + Aegis + AO Registrar + Base mainnet](docs/architecture.png)
@@ -25,7 +25,7 @@
 - New image lands → **RED ALERT / IMAGE LANDED!**
 - Apprentice runs sub-100ms perceptual-hash search against the GCX Registry (Aegis service, LSH 16×4)
 - **GOLDEN CODEX DETECTED** → C2PA-signed, registered as `GCX-AAt-XX`, training rights present
-- **$0.01 USDC** paid to Aegis for the search (Kite Passport → x402 → Base mainnet)
+- **$0.01 USDC.e** paid to Aegis for the search (Kite Passport → x402 → Kite mainnet 2366)
 
 ### Phase 2 — Cocktail Bar (Cognitive Nutrition pre-purchase priming)
 
@@ -48,9 +48,9 @@
 - All Kite tx IDs and AO message IDs attested in the live feed
 - End state: **IMAGE** and **GOLDEN CODEX** buttons surface — image renders + Museum-Grade accordion of the Oracle Metadata
 
-**Total transaction count in 90s:** 4 (hash search · cocktail order · artist payout · platform fee)
-**Total Maestra spend:** $1.11 USDC ($0.01 Aegis registry check + $0.10 Aeternum Sour cocktail + $1.00 training-license split $0.95/$0.05), Base mainnet, atomic via x402 v2 settlement.
-**Platform wallet:** a real **Coinbase Wallet** at `0xFE14…063B` — the agent economy, end-to-end on the Coinbase stack.
+**Total transaction count across the live demo:** 8 (4 Aegis searches · 1 cocktail order · 3 training-license settlements).
+**Total Maestra spend:** $3.09 USDC.e on Kite mainnet 2366, atomic via x402 v2 with EIP-712 TransferWithAuthorization signed by an ephemeral Kite Passport session key.
+**Platform wallet:** a real **Coinbase Wallet** at `0xFE141943…063B` — the agent economy, end-to-end on real chains, no testnet anywhere.
 
 ---
 
@@ -72,7 +72,7 @@ This repo deploys **three Cloud Run services** in production today and depends o
 | Web App OR CLI Tool | Cloud Run agents (CLI-invocable) + `golden-codex.com/kite-live` status page (Web) |
 | Agent authenticates itself | Kite Passport DIDs (`agent_019dd7eb-8549-7c9a-987c-79dba07bf6ef` = Maestra, etc.) |
 | Executes autonomously | Cloud Scheduler triggers + autonomous decision loops in `agents/*/main.py` |
-| Uses on-chain settlement | x402 v2 envelopes (Base mainnet eip155:8453, USDC) — `services/gcx-bar/x402.py`, `agents/*/x402_settlement.py` |
+| Uses on-chain settlement | x402 v2 envelopes — Kite mainnet `eip155:2366` (USDC.e) **and** Base mainnet `eip155:8453` (USDC), routed by Kite Passport. See `services/gcx-bar/x402.py`, `services/gcx-bar/kite_passport_verify.py`, `agents/*/x402_settlement.py` |
 | Deploys live | Cloud Run + Firebase Hosting (Google stack) — `deploy.sh` in each service |
 | Demo works end-to-end | Phase 1 → 2 → 3 above, with real Base txs and real AO Registrar mutations |
 | GitHub repo with README + reproduce | This file + `docker-compose.yml` (below) + `.env.example` |

@@ -48,7 +48,8 @@ NETWORK_CONFIGS = {
         "chain_label": "kite-mainnet",
         "rpc_url": "https://rpc.gokite.ai/",
         "explorer_url": "https://kitescan.ai",
-        "settlement_token": os.environ.get("KITE_MAINNET_USDC", "0x0fF5393387ad2f9f691FD6Fd28e07E3969e27e63"),
+        # Bridged USDC (Kite AI) — symbol USDC.e — verified on-chain via kitescan.ai.
+        "settlement_token": os.environ.get("KITE_USDC", "0x7aB6f3ed87C42eF0aDb67Ed95090f8bF5240149e"),
         "facilitator_url": "https://facilitator.pieverse.io",
         "decimals": 6,
         "scheme": "exact",
